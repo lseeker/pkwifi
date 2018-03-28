@@ -54,12 +54,12 @@
 		3218D47C27DB922B631CE0D6 /* Pods-pkwifi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.debug.xcconfig"; sourceTree = "<group>"; };
 		3441C9956A8EBE72DADB7EE7 /* Pods-pkwifi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.release.xcconfig"; sourceTree = "<group>"; };
 		750988EA20693E5D00960527 /* ImportInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportInfo.swift; sourceTree = "<group>"; };
-		751EC18F2065317700CFFEB4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		751EC1912065468E00CFFEB4 /* pkimport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = pkimport.entitlements; sourceTree = "<group>"; };
 		751EC1922065468E00CFFEB4 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		751EC1942065D69A00CFFEB4 /* CameraProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraProperties.swift; sourceTree = "<group>"; };
 		751EC1962065DC0400CFFEB4 /* ConnectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
 		751EC1982066300600CFFEB4 /* props.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = props.json; sourceTree = "<group>"; };
+		75243B7B206C1BC800207B1C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		75583335205AB09E0004DAE2 /* list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = list.json; sourceTree = "<group>"; };
 		7558333A205AB2C40004DAE2 /* PhotoPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPath.swift; sourceTree = "<group>"; };
 		7558333E205ABB180004DAE2 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
@@ -188,7 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				751EC1912065468E00CFFEB4 /* pkimport.entitlements */,
-				751EC18F2065317700CFFEB4 /* Info.plist */,
+				75243B7C206C1BC800207B1C /* Info.plist */,
 				75583339205AB29E0004DAE2 /* Model */,
 				759817F820021F02004ACE35 /* AppDelegate.swift */,
 				7598180120021F02004ACE35 /* Main.storyboard */,
@@ -566,6 +566,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		75243B7C206C1BC800207B1C /* Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				75243B7B206C1BC800207B1C /* Base */,
+			);
+			name = Info.plist;
+			sourceTree = "<group>";
+		};
 		7598180120021F02004ACE35 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
