@@ -1,0 +1,6 @@
+framework module Pods_pkimportTests {
+  umbrella header "Pods-pkimportTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
