@@ -19,7 +19,8 @@ enum ImportState: Int, Codable {
 class ImportInfo: Codable {
     let photo: PhotoPath
     var state = ImportState.None
-    var assetIdentifier: String?
+    //var order = 0
+    //var assetIdentifier: String?
     
     init(photo: PhotoPath) {
         self.photo = photo

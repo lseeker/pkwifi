@@ -73,7 +73,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     private func updateUIComponents() {
-        if importState != .None && importState != .Error {
+        if importState != .None {
             return
         }
         

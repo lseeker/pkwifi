@@ -25,6 +25,7 @@
 		7598180820021F02004ACE35 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7598180620021F02004ACE35 /* LaunchScreen.storyboard */; };
 		7598181320021F02004ACE35 /* pkwifiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7598181220021F02004ACE35 /* pkwifiTests.swift */; };
 		7598181E20021F02004ACE35 /* pkwifiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7598181D20021F02004ACE35 /* pkwifiUITests.swift */; };
+		75A6057A206C1CE500718A02 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A60578206C1CE500718A02 /* Info.plist */; };
 		7F46AD57575B968C2D964852 /* Pods_pkimportTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAC1255B620CEDAC8E2A06AF /* Pods_pkimportTests.framework */; };
 		B6F42AACE730E7E4E0ED69CB /* Pods_pkimport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6A75DBBB9BF1D2BFB1948F /* Pods_pkimport.framework */; };
 		F60964AFD034ADC703E4AF1A /* Pods_pkimportUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B529A4DF53137BB67674872A /* Pods_pkimportUITests.framework */; };
@@ -53,20 +54,19 @@
 		2C4801BB3E5409E24A68C41F /* Pods-pkimportUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkimportUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkimportUITests/Pods-pkimportUITests.release.xcconfig"; sourceTree = "<group>"; };
 		3218D47C27DB922B631CE0D6 /* Pods-pkwifi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.debug.xcconfig"; sourceTree = "<group>"; };
 		3441C9956A8EBE72DADB7EE7 /* Pods-pkwifi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.release.xcconfig"; sourceTree = "<group>"; };
-		750988EA20693E5D00960527 /* ImportInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportInfo.swift; sourceTree = "<group>"; };
+		750988EA20693E5D00960527 /* ImportInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportInfo.swift; sourceTree = "<group>"; };
 		751EC1912065468E00CFFEB4 /* pkimport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = pkimport.entitlements; sourceTree = "<group>"; };
 		751EC1922065468E00CFFEB4 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
-		751EC1942065D69A00CFFEB4 /* CameraProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraProperties.swift; sourceTree = "<group>"; };
+		751EC1942065D69A00CFFEB4 /* CameraProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraProperties.swift; sourceTree = "<group>"; };
 		751EC1962065DC0400CFFEB4 /* ConnectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
 		751EC1982066300600CFFEB4 /* props.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = props.json; sourceTree = "<group>"; };
-		75243B7B206C1BC800207B1C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		75583335205AB09E0004DAE2 /* list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = list.json; sourceTree = "<group>"; };
-		7558333A205AB2C40004DAE2 /* PhotoPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPath.swift; sourceTree = "<group>"; };
-		7558333E205ABB180004DAE2 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		7558333A205AB2C40004DAE2 /* PhotoPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoPath.swift; sourceTree = "<group>"; };
+		7558333E205ABB180004DAE2 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		75583340205E77230004DAE2 /* MainCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionViewController.swift; sourceTree = "<group>"; };
 		75583342205EA5F40004DAE2 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
-		75583346205ED8BC0004DAE2 /* PhotoListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoListResponse.swift; sourceTree = "<group>"; };
-		755935EB2066549000503FFD /* CameraError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraError.swift; sourceTree = "<group>"; };
+		75583346205ED8BC0004DAE2 /* PhotoListResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoListResponse.swift; sourceTree = "<group>"; };
+		755935EB2066549000503FFD /* CameraError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraError.swift; sourceTree = "<group>"; };
 		759817F520021F02004ACE35 /* pkimport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pkimport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		759817F820021F02004ACE35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7598180220021F02004ACE35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -78,6 +78,7 @@
 		7598181920021F02004ACE35 /* pkimportUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pkimportUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7598181D20021F02004ACE35 /* pkwifiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pkwifiUITests.swift; sourceTree = "<group>"; };
 		7598181F20021F02004ACE35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		75A60579206C1CE500718A02 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		7B42387EFD41C4175EBB2995 /* Pods-pkwifiUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiUITests/Pods-pkwifiUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		8802943BC19F49049C505803 /* Pods-pkwifiUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiUITests/Pods-pkwifiUITests.release.xcconfig"; sourceTree = "<group>"; };
 		993DCF2E223D136A88AC6F24 /* Pods-pkwifiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiTests/Pods-pkwifiTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -187,8 +188,8 @@
 		759817F720021F02004ACE35 /* pkimport */ = {
 			isa = PBXGroup;
 			children = (
+				75A60578206C1CE500718A02 /* Info.plist */,
 				751EC1912065468E00CFFEB4 /* pkimport.entitlements */,
-				75243B7C206C1BC800207B1C /* Info.plist */,
 				75583339205AB29E0004DAE2 /* Model */,
 				759817F820021F02004ACE35 /* AppDelegate.swift */,
 				7598180120021F02004ACE35 /* Main.storyboard */,
@@ -345,6 +346,7 @@
 				7598180820021F02004ACE35 /* LaunchScreen.storyboard in Resources */,
 				7598180520021F02004ACE35 /* Assets.xcassets in Resources */,
 				751EC1992066300600CFFEB4 /* props.json in Resources */,
+				75A6057A206C1CE500718A02 /* Info.plist in Resources */,
 				7598180320021F02004ACE35 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -566,14 +568,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		75243B7C206C1BC800207B1C /* Info.plist */ = {
-			isa = PBXVariantGroup;
-			children = (
-				75243B7B206C1BC800207B1C /* Base */,
-			);
-			name = Info.plist;
-			sourceTree = "<group>";
-		};
 		7598180120021F02004ACE35 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -588,6 +582,14 @@
 				7598180720021F02004ACE35 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		75A60578206C1CE500718A02 /* Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				75A60579206C1CE500718A02 /* Base */,
+			);
+			name = Info.plist;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

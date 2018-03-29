@@ -33,6 +33,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     
     private var tasks = [Int: IndexPath]()
     private var importStates = [PhotoPath: ImportState]()
+    //private var identifiers = [String]()
     
     private var lastWidth: CGFloat = 0
     private var lastSize = CGSize()
@@ -190,7 +191,21 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             collectionView?.selectItem(at: nil, animated: true, scrollPosition: [])
         } else {
             for i in 0 ..< photos!.count {
-                collectionView?.selectItem(at: IndexPath(item: i, section: 0), animated: true, scrollPosition: [])
+                let indexPath = IndexPath(item: i, section: 0)
+                if let state = importStates[photos![i]] {
+                    if state == .Imported {
+                        continue
+                    }
+                    
+                    if state == .Error {
+                        importStates[photos![i]] = nil
+                        if let cell = collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+                            cell.importState = .None
+                        }
+                    }
+                }
+                
+                collectionView?.selectItem(at: indexPath, animated: true, scrollPosition: [])
             }
         }
         
@@ -362,20 +377,24 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         super.encodeRestorableState(with: coder)
         
         let encoder = JSONEncoder()
-        coder.encode(try? encoder.encode(photos), forKey: "Photos")
         coder.encode(tasks, forKey: "Tasks")
         coder.encode(try? encoder.encode(importStates), forKey: "States")
+        if let offset = collectionView?.contentOffset {
+            coder.encode(offset, forKey: "Offset")
+        }
     }
     
     override func decodeRestorableState(with coder: NSCoder) {
-        super.decodeRestorableState(with: coder)
-        
         let decoder = JSONDecoder()
-        photos = try! decoder.decode([PhotoPath].self, from: coder.decodeObject(forKey: "Photos") as! Data)
         tasks = coder.decodeObject(forKey: "Tasks") as! [Int : IndexPath]
         importStates = try! decoder.decode([PhotoPath: ImportState].self, from: coder.decodeObject(forKey: "States") as! Data)
+        reloadPhotos()
         
-        collectionView?.reloadData()
+        if let offset = coder.decodeObject(forKey: "Offset") as? String {
+            collectionView?.contentOffset = CGPointFromString(offset)
+        }
+        
+        super.decodeRestorableState(with: coder)
     }
     
     // MARK: - Navigation
@@ -428,7 +447,24 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return appDelegate.state == .Select && importStates[photos![indexPath.item]] != .Imported
+        if appDelegate.state != .Select {
+            return false
+        }
+        
+        if let state = importStates[photos![indexPath.item]] {
+            if state == .Imported {
+                return false
+            }
+            
+            if state == .Error {
+                importStates[photos![indexPath.item]] = nil
+                if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+                    cell.importState = .None
+                }
+            }
+        }
+        
+        return true
     }
     
     override func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {

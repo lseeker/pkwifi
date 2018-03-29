@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if state == .Select {
             let saveTime = Date(timeIntervalSinceReferenceDate: coder.decodeDouble(forKey: "SaveTime"))
-            if saveTime.timeIntervalSinceNow > 1800 { // 30 minutes
+            if saveTime.timeIntervalSinceNow < -600 { // 10 minutes
                 state = .Launch
                 return false
             }
