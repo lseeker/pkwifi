@@ -69,6 +69,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         }
         
         let sc = URLSessionConfiguration.background(withIdentifier: "kr.inode.pkimport")
+        sc.httpMaximumConnectionsPerHost = 2 // set to 2, but not works cause access by ip
         sc.timeoutIntervalForRequest = 10
         backgroundSession = URLSession(configuration: sc, delegate: self, delegateQueue: nil)
         
@@ -111,7 +112,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             fallthrough
         case .restricted:
             // show denied photo
-            let alert = UIAlertController(title: "Photos access", message: "Photos access required for operation.", preferredStyle: .alert)
+            let alert = UIAlertController(title: NSLocalizedString("Photos access", comment: "Photo denied alert title"), message: NSLocalizedString("Photos access required for operation.", comment: "Photo denied alert message"), preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Open Settings App", style: .default, handler: { (action) in
                 UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
             }))
@@ -143,7 +144,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             navigationItem.rightBarButtonItem = cancelButton
             filterButton.isEnabled = false
             selectButton.isEnabled = false
-            bottomDescription.title = "Importing..."
+            bottomDescription.title = NSLocalizedString("Importing...", comment: "description title")
         } else {
             refreshButton.isEnabled = true
             storageButton.isEnabled = Camera.shared.props?.storages.count ?? 0 > 1
@@ -159,14 +160,14 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         let count = collectionView?.indexPathsForSelectedItems?.count ?? 0
         
         if count > 0 {
-            importButton.title = "Import Selected"
-            selectButton.title = "Deselect All"
+            importButton.title = NSLocalizedString("Import Selected", comment: "import button title")
+            selectButton.title = NSLocalizedString("Deselect All", comment: "select button title")
             bottomDescription.title = "\(count) / \(filtered.count)"
         } else {
-            importButton.title = "Import All"
-            selectButton.title = "Select All"
+            importButton.title = NSLocalizedString("Import All", comment: "import button title")
+            selectButton.title = NSLocalizedString("Select All", comment: "select button title")
             if filtered.isEmpty {
-                bottomDescription.title = "No Photos"
+                bottomDescription.title = NSLocalizedString("No Photos", comment: "description title")
             } else {
                 bottomDescription.title = "\(filtered.count)"
             }
@@ -223,11 +224,11 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             
             Camera.shared.loadProperties(completion: { (props, error) in
                 if let error = error {
-                    let alert = UIAlertController(title: "ERROR", message: "Connetion to Camera lost.\n\(error.localizedDescription)", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "Reconnect", style: .default) { (action) in
+                    let alert = UIAlertController(title: NSLocalizedString("ERROR", comment: "alert title on import"), message: NSLocalizedString("Connetion to Camera lost.", comment: "alert message on import").appending("\n\(error.localizedDescription)"), preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("Reconnect", comment: "alert button on import error"), style: .default) { (action) in
                         self.performSegue(withIdentifier: "ConnectCamera", sender: nil)
                     })
-                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { (action) in
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "alert button on import error"), style: .cancel) { (action) in
                         self.appDelegate.state = .Select
                         self.updateUI()
                     })
@@ -400,7 +401,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ConnectCamera" {
             appDelegate.state = .Connect
-            bottomDescription.title = "Connecting..."
+            bottomDescription.title = NSLocalizedString("Connecting...", comment: "description title")
         }
     }
     
@@ -584,7 +585,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
                 return IndexPath(item: idx, section: 0)
             }
         }
-
+        
         return nil
     }
 }

@@ -42,8 +42,8 @@ class ConnectViewController: UIViewController {
     
     func showError(_ message: String, _ error: Error) {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: "ERROR", message: "\(message)\n\(error.localizedDescription)", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Retry", style: .default) { (action) in
+            let alert = UIAlertController(title: NSLocalizedString("ERROR", comment: "alert title"), message: "\(message)\n\(error.localizedDescription)", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Retry", comment: "alert button"), style: .default) { (action) in
                 self.loadProps()
                 self.updateUI()
             })
@@ -54,7 +54,7 @@ class ConnectViewController: UIViewController {
     
     func updateUI() {
         if appDelegate.state == .Connect {
-            connectLabel.text = "Connecting to Camera"
+            connectLabel.text = NSLocalizedString("Connecting to Camera", comment: "main state text")
             startBlink(label: connectLabel)
             finishBlink(label: loadingLabel)
             loadingLabel.alpha = 0.5
@@ -90,7 +90,7 @@ class ConnectViewController: UIViewController {
                                     break
                                 }
                             }
-                            self.showError("Cannot connect to Camera.\nPlease confirm Wi-Fi network connected to Camera.", showErr)
+                            self.showError(NSLocalizedString("Cannot connect to Camera.\nPlease confirm Wi-Fi network connected to Camera.", comment: "connect error message"), showErr)
                         } else {
                             self.loadProps()
                         }
@@ -99,7 +99,7 @@ class ConnectViewController: UIViewController {
                     return
                 }
                 
-                self.showError("Cannot connect to Camera.", err)
+                self.showError(NSLocalizedString("Cannot connect to Camera.\nPlease confirm Wi-Fi network connected to Camera.", comment: "connect error message"), err)
                 return
             }
             
@@ -119,7 +119,7 @@ class ConnectViewController: UIViewController {
 
         Camera.shared.loadList { (photos, error) in
             if let err = error {
-                self.showError("Cannot load list of Photos", err)
+                self.showError(NSLocalizedString("Cannot load list of Photos", comment: "loading photo list error message"), err)
                 return
             }
             

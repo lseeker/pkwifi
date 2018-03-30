@@ -27,6 +27,8 @@
 		7598181320021F02004ACE35 /* pkwifiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7598181220021F02004ACE35 /* pkwifiTests.swift */; };
 		7598181E20021F02004ACE35 /* pkwifiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7598181D20021F02004ACE35 /* pkwifiUITests.swift */; };
 		75A6057A206C1CE500718A02 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A60578206C1CE500718A02 /* Info.plist */; };
+		75B1B8AE206EB82300F54553 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75B1B8AC206EB82300F54553 /* Localizable.strings */; };
+		75B1B8B4206EB86600F54553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75B1B8B2206EB86500F54553 /* InfoPlist.strings */; };
 		7F46AD57575B968C2D964852 /* Pods_pkimportTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAC1255B620CEDAC8E2A06AF /* Pods_pkimportTests.framework */; };
 		B6F42AACE730E7E4E0ED69CB /* Pods_pkimport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6A75DBBB9BF1D2BFB1948F /* Pods_pkimport.framework */; };
 		F60964AFD034ADC703E4AF1A /* Pods_pkimportUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B529A4DF53137BB67674872A /* Pods_pkimportUITests.framework */; };
@@ -57,6 +59,8 @@
 		3441C9956A8EBE72DADB7EE7 /* Pods-pkwifi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.release.xcconfig"; sourceTree = "<group>"; };
 		750988EA20693E5D00960527 /* PhotoCellData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCellData.swift; sourceTree = "<group>"; };
 		750F094F206EAE890015DF34 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		750F0951206EB4570015DF34 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
+		750F0952206EB4570015DF34 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		751EC1912065468E00CFFEB4 /* pkimport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = pkimport.entitlements; sourceTree = "<group>"; };
 		751EC1922065468E00CFFEB4 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		751EC1942065D69A00CFFEB4 /* CameraProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraProperties.swift; sourceTree = "<group>"; };
@@ -81,6 +85,8 @@
 		7598181D20021F02004ACE35 /* pkwifiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pkwifiUITests.swift; sourceTree = "<group>"; };
 		7598181F20021F02004ACE35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75A60579206C1CE500718A02 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
+		75B1B8AD206EB82300F54553 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		75B1B8B3206EB86500F54553 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7B42387EFD41C4175EBB2995 /* Pods-pkwifiUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiUITests/Pods-pkwifiUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		8802943BC19F49049C505803 /* Pods-pkwifiUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiUITests/Pods-pkwifiUITests.release.xcconfig"; sourceTree = "<group>"; };
 		993DCF2E223D136A88AC6F24 /* Pods-pkwifiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiTests/Pods-pkwifiTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -170,6 +176,7 @@
 		759817EC20021F01004ACE35 = {
 			isa = PBXGroup;
 			children = (
+				75B1B8B2206EB86500F54553 /* InfoPlist.strings */,
 				759817F720021F02004ACE35 /* pkimport */,
 				7598181120021F02004ACE35 /* pkimportTests */,
 				7598181C20021F02004ACE35 /* pkimportUITests */,
@@ -192,6 +199,7 @@
 		759817F720021F02004ACE35 /* pkimport */ = {
 			isa = PBXGroup;
 			children = (
+				75B1B8AC206EB82300F54553 /* Localizable.strings */,
 				75A60578206C1CE500718A02 /* Info.plist */,
 				751EC1912065468E00CFFEB4 /* pkimport.entitlements */,
 				75583339205AB29E0004DAE2 /* Model */,
@@ -329,6 +337,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 759817EC20021F01004ACE35;
 			productRefGroup = 759817F620021F02004ACE35 /* Products */;
@@ -348,7 +357,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7598180820021F02004ACE35 /* LaunchScreen.storyboard in Resources */,
+				75B1B8B4206EB86600F54553 /* InfoPlist.strings in Resources */,
 				7598180520021F02004ACE35 /* Assets.xcassets in Resources */,
+				75B1B8AE206EB82300F54553 /* Localizable.strings in Resources */,
 				751EC1992066300600CFFEB4 /* props.json in Resources */,
 				75A6057A206C1CE500718A02 /* Info.plist in Resources */,
 				7598180320021F02004ACE35 /* Main.storyboard in Resources */,
@@ -576,6 +587,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				7598180220021F02004ACE35 /* Base */,
+				750F0951206EB4570015DF34 /* ko */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -584,6 +596,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				7598180720021F02004ACE35 /* Base */,
+				750F0952206EB4570015DF34 /* ko */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -596,6 +609,23 @@
 			name = Info.plist;
 			sourceTree = "<group>";
 		};
+		75B1B8AC206EB82300F54553 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				75B1B8AD206EB82300F54553 /* ko */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		75B1B8B2206EB86500F54553 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				75B1B8B3206EB86500F54553 /* ko */,
+			);
+			name = InfoPlist.strings;
+			path = pkimport;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -603,6 +633,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -662,6 +693,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
