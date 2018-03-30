@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		750988EB20693E5D00960527 /* ImportInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750988EA20693E5D00960527 /* ImportInfo.swift */; };
+		750988EB20693E5D00960527 /* PhotoCellData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750988EA20693E5D00960527 /* PhotoCellData.swift */; };
 		751EC1932065468E00CFFEB4 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 751EC1922065468E00CFFEB4 /* NetworkExtension.framework */; };
 		751EC1952065D69A00CFFEB4 /* CameraProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751EC1942065D69A00CFFEB4 /* CameraProperties.swift */; };
 		751EC1972065DC0400CFFEB4 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751EC1962065DC0400CFFEB4 /* ConnectViewController.swift */; };
@@ -54,7 +54,7 @@
 		2C4801BB3E5409E24A68C41F /* Pods-pkimportUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkimportUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkimportUITests/Pods-pkimportUITests.release.xcconfig"; sourceTree = "<group>"; };
 		3218D47C27DB922B631CE0D6 /* Pods-pkwifi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.debug.xcconfig"; sourceTree = "<group>"; };
 		3441C9956A8EBE72DADB7EE7 /* Pods-pkwifi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.release.xcconfig"; sourceTree = "<group>"; };
-		750988EA20693E5D00960527 /* ImportInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportInfo.swift; sourceTree = "<group>"; };
+		750988EA20693E5D00960527 /* PhotoCellData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCellData.swift; sourceTree = "<group>"; };
 		751EC1912065468E00CFFEB4 /* pkimport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = pkimport.entitlements; sourceTree = "<group>"; };
 		751EC1922065468E00CFFEB4 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		751EC1942065D69A00CFFEB4 /* CameraProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraProperties.swift; sourceTree = "<group>"; };
@@ -158,7 +158,7 @@
 				7558333A205AB2C40004DAE2 /* PhotoPath.swift */,
 				751EC1942065D69A00CFFEB4 /* CameraProperties.swift */,
 				755935EB2066549000503FFD /* CameraError.swift */,
-				750988EA20693E5D00960527 /* ImportInfo.swift */,
+				750988EA20693E5D00960527 /* PhotoCellData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -525,7 +525,7 @@
 			files = (
 				7558333B205AB2C40004DAE2 /* PhotoPath.swift in Sources */,
 				755935EC2066549000503FFD /* CameraError.swift in Sources */,
-				750988EB20693E5D00960527 /* ImportInfo.swift in Sources */,
+				750988EB20693E5D00960527 /* PhotoCellData.swift in Sources */,
 				751EC1952065D69A00CFFEB4 /* CameraProperties.swift in Sources */,
 				75583347205ED8BC0004DAE2 /* PhotoListResponse.swift in Sources */,
 				759817F920021F02004ACE35 /* AppDelegate.swift in Sources */,

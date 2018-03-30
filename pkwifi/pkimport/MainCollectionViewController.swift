@@ -29,11 +29,10 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     @IBOutlet weak var bottomDescription: UIBarButtonItem!
     
     private var filterType = FilterType.ALL
-    private var photos: [PhotoPath]?
     
+    private var cellDataArray = [PhotoCellData]()
     private var tasks = [Int: IndexPath]()
-    private var importStates = [PhotoPath: ImportState]()
-    //private var identifiers = [String]()
+    private var filtered = [PhotoCellData]()
     
     private var lastWidth: CGFloat = 0
     private var lastSize = CGSize()
@@ -157,28 +156,25 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func updateDescription() {
-        if let list = photos {
-            let count = collectionView?.indexPathsForSelectedItems?.count ?? 0
-            
-            if count > 0 {
-                importButton.title = "Import Selected"
-                selectButton.title = "Deselect All"
-                bottomDescription.title = "\(count) / \(list.count)"
+        let count = collectionView?.indexPathsForSelectedItems?.count ?? 0
+        
+        if count > 0 {
+            importButton.title = "Import Selected"
+            selectButton.title = "Deselect All"
+            bottomDescription.title = "\(count) / \(filtered.count)"
+        } else {
+            importButton.title = "Import All"
+            selectButton.title = "Select All"
+            if filtered.isEmpty {
+                bottomDescription.title = "No Photos"
             } else {
-                importButton.title = "Import All"
-                selectButton.title = "Select All"
-                if list.count == 0 {
-                    bottomDescription.title = "No Photos"
-                } else {
-                    bottomDescription.title = "\(list.count)"
-                }
+                bottomDescription.title = "\(filtered.count)"
             }
         }
     }
     
     @IBAction func connectClosed(segue: UIStoryboardSegue) {
         tasks.removeAll()
-        importStates.removeAll()
         reloadPhotos()
         navigationItem.title = Camera.shared.props?.model
         appDelegate.state = .Select
@@ -186,27 +182,15 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @IBAction func selectButtonPushed(_ sender: Any) {
-        if collectionView?.indexPathsForSelectedItems?.count ?? 0 > 0 {
+        if collectionView?.indexPathsForSelectedItems?.isEmpty ?? true {
+            for (idx, cellData) in filtered.enumerated() {
+                if cellData.state != .Imported {
+                    collectionView?.selectItem(at: IndexPath(item: idx, section: 0), animated: true, scrollPosition: [])
+                }
+            }
+        } else {
             // clear selection
             collectionView?.selectItem(at: nil, animated: true, scrollPosition: [])
-        } else {
-            for i in 0 ..< photos!.count {
-                let indexPath = IndexPath(item: i, section: 0)
-                if let state = importStates[photos![i]] {
-                    if state == .Imported {
-                        continue
-                    }
-                    
-                    if state == .Error {
-                        importStates[photos![i]] = nil
-                        if let cell = collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                            cell.importState = .None
-                        }
-                    }
-                }
-                
-                collectionView?.selectItem(at: indexPath, animated: true, scrollPosition: [])
-            }
         }
         
         updateDescription()
@@ -258,16 +242,17 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
                     let selected = self.collectionView?.indexPathsForSelectedItems
                     if selected?.isEmpty ?? true {
                         // import all photos
-                        for (idx, photo) in self.photos!.enumerated() {
-                            if self.importStates[photo] != .Imported {
+                        for (idx, photo) in self.filtered.enumerated() {
+                            if photo.state != .Imported {
                                 self.startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
                             }
                         }
                     } else {
                         // import selected photos
                         for indexPath in selected!.sorted() {
-                            self.startDownload(self.photos![indexPath.item], indexPath: indexPath)
+                            self.startDownload(self.filtered[indexPath.item], indexPath: indexPath)
                         }
+                        // clean up selection for futher states change
                         self.collectionView?.selectItem(at: nil, animated: false, scrollPosition: [])
                     }
                 }
@@ -276,15 +261,15 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         }
     }
     
-    private func startDownload(_ photo: PhotoPath, indexPath: IndexPath) {
-        let task = backgroundSession!.downloadTask(with: photo.downloadURL)
-        task.priority = 1.0 - Float(indexPath.item) / Float(photos!.count)
+    private func startDownload(_ photo: PhotoCellData, indexPath: IndexPath) {
+        let task = backgroundSession!.downloadTask(with: photo.photoPath.downloadURL)
+        task.priority = 1.0 - Float(indexPath.item) / Float(filtered.count)
         tasks[task.taskIdentifier] = indexPath
-        importStates[photo] = .Selected
+        photo.state = .Ready
         task.resume()
         
         if let cell = collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-            cell.importState = .Selected
+            cell.update()
         }
     }
     
@@ -351,24 +336,37 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         ud.set(filterType.rawValue, forKey: "FilterType")
         ud.synchronize()
         
-        reloadPhotos()
+        applyFilter()
     }
     
     func reloadPhotos() {
-        if filterType == .ALL {
-            photos = Camera.shared.photos
-        } else {
-            photos = Camera.shared.photos?.filter({ (photo) -> Bool in
-                switch filterType {
-                case .ALL:
-                    return true
-                case .RAW:
-                    return !photo.file.hasSuffix(".JPG")
-                case .JPG:
-                    return photo.file.hasSuffix(".JPG")
-                }
+        cellDataArray.removeAll()
+        
+        if let photoPaths = Camera.shared.photos {
+            cellDataArray.reserveCapacity(photoPaths.count)
+            
+            for photoPath in photoPaths {
+                cellDataArray.append(PhotoCellData(photoPath: photoPath))
+            }
+        }
+        
+        applyFilter()
+    }
+    
+    func applyFilter() {
+        switch filterType {
+        case .ALL:
+            filtered = cellDataArray
+        case .RAW:
+            filtered = cellDataArray.filter({ (cellData) -> Bool in
+                return !cellData.photoPath.file.hasSuffix(".JPG")
+            })
+        case .JPG:
+            filtered = cellDataArray.filter({ (cellData) -> Bool in
+                return cellData.photoPath.file.hasSuffix(".JPG")
             })
         }
+        
         collectionView?.reloadData()
         updateDescription()
     }
@@ -378,7 +376,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         
         let encoder = JSONEncoder()
         coder.encode(tasks, forKey: "Tasks")
-        coder.encode(try? encoder.encode(importStates), forKey: "States")
+        coder.encode(try? encoder.encode(cellDataArray), forKey: "CellDataArray")
         if let offset = collectionView?.contentOffset {
             coder.encode(offset, forKey: "Offset")
         }
@@ -387,9 +385,8 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     override func decodeRestorableState(with coder: NSCoder) {
         let decoder = JSONDecoder()
         tasks = coder.decodeObject(forKey: "Tasks") as! [Int : IndexPath]
-        importStates = try! decoder.decode([PhotoPath: ImportState].self, from: coder.decodeObject(forKey: "States") as! Data)
-        reloadPhotos()
-        
+        cellDataArray = try! decoder.decode([PhotoCellData].self, from: coder.decodeObject(forKey: "CellDataArray") as! Data)
+        applyFilter()
         if let offset = coder.decodeObject(forKey: "Offset") as? String {
             collectionView?.contentOffset = CGPointFromString(offset)
         }
@@ -414,17 +411,14 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos?.count ?? 0
+        return filtered.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: photoCellreuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
         
         // Configure the cell
-        if let photo = photos?[indexPath.item] {
-            cell.path = photo
-            cell.importState = importStates[photo] ?? .None
-        }
+        cell.cellData = filtered[indexPath.item]
         
         return cell
     }
@@ -432,11 +426,18 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - UICollectionViewDataSourcePrefetching
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        let urls = indexPaths.flatMap { photos?[$0.item].thumbnailURL }
+        let urls = indexPaths.flatMap { filtered[$0.item].photoPath.thumbnailURL }
         ImagePrefetcher(urls: urls).start()
     }
     
     // MARK: - UICollectionViewDelegate
+    
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        // update cell for unvisible state changes
+        if let cell = cell as? PhotoCollectionViewCell {
+            cell.update()
+        }
+    }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         updateDescription()
@@ -451,16 +452,9 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             return false
         }
         
-        if let state = importStates[photos![indexPath.item]] {
-            if state == .Imported {
+        if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+            if cell.cellData?.state == .Imported {
                 return false
-            }
-            
-            if state == .Error {
-                importStates[photos![indexPath.item]] = nil
-                if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                    cell.importState = .None
-                }
             }
         }
         
@@ -496,10 +490,10 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         
         if let indexPath = self.tasks[downloadTask.taskIdentifier] {
-            self.importStates[self.photos![indexPath.item]] = .Importing
             DispatchQueue.main.async {
+                self.filtered[indexPath.item].state = .Importing
                 if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                    cell.importState = .Importing
+                    cell.update()
                     cell.progressView.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
                 }
             }
@@ -507,31 +501,21 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        session.getAllTasks { (tasks) in
-            for task in tasks {
-                if task.state != .completed {
-                    return
+        if let error = error, let indexPath = self.tasks[task.taskIdentifier] {
+            debugPrint("url task fail with \(error)")
+            DispatchQueue.main.async {
+                self.filtered[indexPath.item].state = .Error
+                if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+                    cell.update()
                 }
             }
-            
+        }
+        
+        tasks.removeValue(forKey: task.taskIdentifier)
+        if tasks.isEmpty {
             DispatchQueue.main.async {
                 self.appDelegate.state = .Select
                 self.updateUI()
-            }
-        }
-        
-        guard let error = error else {
-            return
-        }
-        
-        debugPrint("url task fail with \(error)")
-        
-        if let indexPath = self.tasks[task.taskIdentifier] {
-            self.importStates[self.photos![indexPath.item]] = .Error
-            DispatchQueue.main.async {
-                if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                    cell.importState = .Error
-                }
             }
         }
     }
@@ -565,10 +549,10 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         }
         
         if let indexPath = self.tasks[downloadTask.taskIdentifier] {
-            self.importStates[self.photos![indexPath.item]] = .Imported
+            filtered[indexPath.item].state = .Imported
             DispatchQueue.main.async {
                 if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                    cell.importState = .Imported
+                    cell.update()
                 }
             }
         }
@@ -591,15 +575,16 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - UIDataSourceModelAssociation
     
     func modelIdentifierForElement(at idx: IndexPath, in view: UIView) -> String? {
-        return photos?[idx.item].identifier
+        return filtered[idx.item].photoPath.identifier
     }
     
     func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
-        guard let idx = photos?.index(of: PhotoPath(identifier: identifier)) else {
-            return nil
+        for (idx, cellData) in filtered.enumerated() {
+            if cellData.photoPath.identifier == identifier {
+                return IndexPath(item: idx, section: 0)
+            }
         }
-        
-        return IndexPath(item: idx, section: 0)
+
+        return nil
     }
-    
 }
