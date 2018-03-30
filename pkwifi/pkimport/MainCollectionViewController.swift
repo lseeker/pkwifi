@@ -426,7 +426,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - UICollectionViewDataSourcePrefetching
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        let urls = indexPaths.flatMap { filtered[$0.item].photoPath.thumbnailURL }
+        let urls = indexPaths.map { filtered[$0.item].photoPath.thumbnailURL }
         ImagePrefetcher(urls: urls).start()
     }
     

@@ -50,14 +50,4 @@ struct PhotoPath: Hashable, Codable
             return URL(string: "http://192.168.0.1/v1/photos/\(dir)/\(file)?size=full\(query)")!
         }
     }
-
-    // MARK: - Hashable
-    var hashValue: Int {
-        return dir.hashValue ^ file.hashValue &* 16777619
-    }
-
-    static func ==(lhs: PhotoPath, rhs: PhotoPath) -> Bool {
-        return lhs.file == rhs.file && lhs.dir == rhs.dir
-    }
-
 }
