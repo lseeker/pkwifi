@@ -60,7 +60,6 @@
 		750988EA20693E5D00960527 /* PhotoCellData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCellData.swift; sourceTree = "<group>"; };
 		750F094F206EAE890015DF34 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		750F0951206EB4570015DF34 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
-		750F0952206EB4570015DF34 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		751EC1912065468E00CFFEB4 /* pkimport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = pkimport.entitlements; sourceTree = "<group>"; };
 		751EC1922065468E00CFFEB4 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		751EC1942065D69A00CFFEB4 /* CameraProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraProperties.swift; sourceTree = "<group>"; };
@@ -596,7 +595,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				7598180720021F02004ACE35 /* Base */,
-				750F0952206EB4570015DF34 /* ko */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
