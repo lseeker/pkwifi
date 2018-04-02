@@ -264,7 +264,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     
     private func startDownload(_ photo: PhotoCellData, indexPath: IndexPath) {
         let task = backgroundSession!.downloadTask(with: photo.photoPath.downloadURL)
-        task.priority = 1.0 - Float(indexPath.item) / Float(filtered.count)
+        task.priority = URLSessionTask.highPriority
         tasks[task.taskIdentifier] = indexPath
         photo.state = .Ready
         task.resume()
@@ -541,7 +541,37 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             try PHPhotoLibrary.shared().performChangesAndWait {
                 if let request = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: dest) {
                     if let a = album, let holder = request.placeholderForCreatedAsset {
-                        PHAssetCollectionChangeRequest(for: a)?.addAssets([holder] as NSArray)
+                        if let indexPath = self.tasks[downloadTask.taskIdentifier] {
+                            let currentPhoto = self.filtered[indexPath.item]
+                            // set identifier
+                            currentPhoto.assetIdentifier = holder.localIdentifier
+                            
+                            let identifiers = self.cellDataArray.compactMap({ (cellData) -> String? in
+                                return cellData.assetIdentifier
+                            })
+                            let pos = identifiers.index(of: holder.localIdentifier)!
+                            let assets = PHAsset.fetchAssets(in: a, options: nil)
+                            var insertPos = assets.count
+                            if assets.count > 0 && !identifiers.isEmpty {
+                                assets.enumerateObjects({ (asset, idx, stop) in
+                                    if let p = identifiers.index(of: asset.localIdentifier) {
+                                        if p < pos {
+                                            insertPos = idx + 1
+                                        } else {
+                                            // p > pos
+                                            insertPos = idx
+                                            stop.pointee = true
+                                        }
+                                    }
+                                })
+                                PHAssetCollectionChangeRequest(for: a, assets: assets)?.insertAssets([holder] as NSArray, at: IndexSet(integer: insertPos))
+                            } else {
+                                PHAssetCollectionChangeRequest(for: a)?.addAssets([holder] as NSArray)
+                            }
+                        } else {
+                            // no task indexpath?
+                            PHAssetCollectionChangeRequest(for: a)?.addAssets([holder] as NSArray)
+                        }
                     }
                 }
             }
