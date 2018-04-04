@@ -66,6 +66,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             activityIndicator.stopAnimating()
             updateOnSelect()
         case .Ready:
+            thumbnail.alpha = 0.7
             progressView.progress = 0
             activityIndicator.stopAnimating()
             selectedImage.image = #imageLiteral(resourceName: "BlueCheckUnselected")

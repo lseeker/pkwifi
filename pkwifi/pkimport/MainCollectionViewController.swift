@@ -505,7 +505,12 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         if let error = error, let indexPath = self.tasks[task.taskIdentifier] {
             debugPrint("url task fail with \(error)")
             DispatchQueue.main.async {
-                self.filtered[indexPath.item].state = .Error
+                if (error as? URLError)?.code == URLError.cancelled {
+                    self.filtered[indexPath.item].state = .Select
+                    self.collectionView?.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                } else {
+                    self.filtered[indexPath.item].state = .Error
+                }
                 if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
                     cell.update()
                 }
