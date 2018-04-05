@@ -72,6 +72,7 @@ class ConnectViewController: UIViewController {
             let ud = UserDefaults.standard
             
             if let err = error {
+                #if !arch(x86_64)
                 if let ssid = ud.string(forKey: "lastSSID"), let key = ud.string(forKey: "lastKey") {
                     let config = NEHotspotConfiguration(ssid: ssid, passphrase: key, isWEP: false)
                     NEHotspotConfigurationManager.shared.apply(config, completionHandler: { (error) in
@@ -98,6 +99,7 @@ class ConnectViewController: UIViewController {
                     
                     return
                 }
+                #endif
                 
                 self.showError(NSLocalizedString("Cannot connect to Camera.\nPlease confirm Wi-Fi network connected to Camera.", comment: "connect error message"), err)
                 return
