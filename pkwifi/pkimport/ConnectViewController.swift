@@ -18,31 +18,46 @@ class ConnectViewController: UIViewController {
             return UIApplication.shared.delegate as! AppDelegate
         }
     }
-    
+
+    private var rework = false
     override func viewDidLoad() {
         super.viewDidLoad()
-     
-        if appDelegate.state == .LoadList {
-            loadList()
-        } else {
-            loadProps()
+        
+        NotificationCenter.default.addObserver(forName: .UIApplicationDidBecomeActive, object: nil, queue: .main) { (notification) in
+            if self.rework {
+                self.rework = false
+                self.startWork()
+            }
         }
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
+        startWork()
+    }
+    
+    func startWork() {
+        if appDelegate.state == .LoadList {
+            loadList()
+        } else {
+            loadProps()
+        }
         updateUI()
     }
     
-    func showError(_ message: String, _ error: Error) {
+    func showError(_ message: String) {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: NSLocalizedString("ERROR", comment: "alert title"), message: "\(message)\n\(error.localizedDescription)", preferredStyle: .alert)
+            let alert = UIAlertController(title: NSLocalizedString("NOT CONNECTED", comment: "alert title"), message: "\(message)", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Open Settings", comment: "alert button"), style: .default) { (action) in
+                UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
+                self.rework = true
+            })
             alert.addAction(UIAlertAction(title: NSLocalizedString("Retry", comment: "alert button"), style: .default) { (action) in
                 self.loadProps()
                 self.updateUI()
@@ -55,12 +70,14 @@ class ConnectViewController: UIViewController {
     func updateUI() {
         if appDelegate.state == .Connect {
             connectLabel.text = NSLocalizedString("Connecting to Camera", comment: "main state text")
+            connectLabel.alpha = 0.5
             startBlink(label: connectLabel)
             finishBlink(label: loadingLabel)
             loadingLabel.alpha = 0.5
         } else if appDelegate.state == .LoadList {
             connectLabel.text = Camera.shared.props?.model
             finishBlink(label: connectLabel)
+            loadingLabel.alpha = 0.5
             startBlink(label: loadingLabel)
         }
     }
@@ -71,17 +88,16 @@ class ConnectViewController: UIViewController {
         Camera.shared.loadProperties { (props, error) in
             let ud = UserDefaults.standard
             
-            if let err = error {
+            if error != nil {
+                print("load prop error: \(error!)")
                 #if !arch(x86_64)
                 if let ssid = ud.string(forKey: "lastSSID"), let key = ud.string(forKey: "lastKey") {
                     let config = NEHotspotConfiguration(ssid: ssid, passphrase: key, isWEP: false)
                     NEHotspotConfigurationManager.shared.apply(config, completionHandler: { (error) in
                         if let heerr = error as NSError? {
-                            var showErr = error!
+                            print("hotspot error: \(error!)")
                             if heerr.domain == "NEHotspotConfigurationErrorDomain" {
                                 switch heerr.code {
-                                case NEHotspotConfigurationError.userDenied.rawValue:
-                                    showErr = err
                                 case NEHotspotConfigurationError.alreadyAssociated.rawValue:
                                     fallthrough
                                 case NEHotspotConfigurationError.pending.rawValue:
@@ -91,7 +107,7 @@ class ConnectViewController: UIViewController {
                                     break
                                 }
                             }
-                            self.showError(NSLocalizedString("Cannot connect to Camera.\nPlease confirm Wi-Fi network connected to Camera.", comment: "connect error message"), showErr)
+                            self.showError(NSLocalizedString("Not connected to Camera's Wi-Fi.\nGo to Settings > Wi-Fi and select your camera's SSID.", comment: "connect error message"))
                         } else {
                             self.loadProps()
                         }
@@ -101,7 +117,7 @@ class ConnectViewController: UIViewController {
                 }
                 #endif
                 
-                self.showError(NSLocalizedString("Cannot connect to Camera.\nPlease confirm Wi-Fi network connected to Camera.", comment: "connect error message"), err)
+                self.showError(NSLocalizedString("Not connected to Camera's Wi-Fi.\nGo to Settings > Wi-Fi and select your camera's SSID.", comment: "connect error message"))
                 return
             }
             
@@ -120,8 +136,9 @@ class ConnectViewController: UIViewController {
         appDelegate.state = .LoadList
 
         Camera.shared.loadList { (photos, error) in
-            if let err = error {
-                self.showError(NSLocalizedString("Cannot load list of Photos", comment: "loading photo list error message"), err)
+            if error != nil {
+                print("list error: \(error!)")
+                self.showError(NSLocalizedString("Error occured in load photos list.\nGo to Settings > Wi-Fi and confirm connected to your camera.", comment: "loading photo list error message"))
                 return
             }
             

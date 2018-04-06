@@ -45,11 +45,15 @@ class Camera {
     
     private init() { }
     
+    private var task: URLSessionDataTask?
+    
     func loadProperties(completion: ((_ props: CameraProperties?, _ error: Error?) -> Void)?) {
+        task?.cancel()
+        
         let sc = URLSessionConfiguration.ephemeral
         sc.timeoutIntervalForRequest = 3
         
-        URLSession(configuration: sc).dataTask(with: URL(string:"http://192.168.0.1/v1/props")!) { (data, response, error) in
+        task = URLSession(configuration: sc).dataTask(with: URL(string:"http://192.168.0.1/v1/props")!) { (data, response, error) in
             if error != nil {
                 completion?(nil, error)
                 return
@@ -60,8 +64,6 @@ class Camera {
                 return
             }
 
-            self.props = result
-
             let fm = FileManager.default
             var asd = try! fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             asd.appendPathComponent("CameraProperties.json")
@@ -70,11 +72,16 @@ class Camera {
             resourceValues.isExcludedFromBackup = true
             try? asd.setResourceValues(resourceValues)
 
+            self.props = result
+            self.task = nil
             completion?(result, nil)
-        }.resume()
+        }
+        task?.resume()
     }
     
     func loadList(completion: ((_ list: [PhotoPath]?, _ error: Error?) -> Void)?) {
+        task?.cancel()
+
         let sc = URLSessionConfiguration.ephemeral
         sc.timeoutIntervalForRequest = 5.0
 
@@ -83,7 +90,7 @@ class Camera {
             query = "?storage=\(storage)"
         }
         
-        URLSession(configuration: sc).dataTask(with: URL(string: "http://192.168.0.1/v1/photos\(query)")!) { (data, response, error) in
+        task = URLSession(configuration: sc).dataTask(with: URL(string: "http://192.168.0.1/v1/photos\(query)")!) { (data, response, error) in
             if error != nil {
                 completion?(nil, error)
                 return
@@ -103,8 +110,10 @@ class Camera {
             try? asd.setResourceValues(resourceValues)
 
             self.photos = result.photos
+            self.task = nil
             completion?(result.photos, nil)
-        }.resume()
+        }
+        task?.resume()
     }
     
     func loadFromFile(withPhotoList: Bool) throws {
