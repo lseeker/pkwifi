@@ -113,7 +113,6 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     func resumeTasks() {
         backgroundSession?.getTasksWithCompletionHandler({ (dataTasks, uploadTasks, downloadTasks) in
             downloadTasks.forEach({ (task) in
-                print(task.state.rawValue)
                 switch task.state {
                 case .running:
                     task.suspend()
