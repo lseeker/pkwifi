@@ -537,6 +537,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         let fm = FileManager.default
         let dest = fm.temporaryDirectory.appendingPathComponent(downloadTask.currentRequest!.url!.path.replacingOccurrences(of: "/", with: "_"))
         
+        var errorOccurred = false
         do {
             defer {
                 try? fm.removeItem(at: dest)
@@ -581,11 +582,12 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
                 }
             }
         } catch {
+            errorOccurred = true
             debugPrint(error)
         }
         
         if let indexPath = self.tasks[downloadTask.taskIdentifier] {
-            filtered[indexPath.item].state = .Imported
+            filtered[indexPath.item].state = errorOccurred ? .Error : .Imported
             DispatchQueue.main.async {
                 if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
                     cell.update()
