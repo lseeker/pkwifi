@@ -55,7 +55,14 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         collectionView?.prefetchDataSource = self
         collectionView?.allowsMultipleSelection = true
         bottomDescription.setTitleTextAttributes([.foregroundColor : UIColor.lightText], for: .disabled)
-        
+
+        let sc = URLSessionConfiguration.background(withIdentifier: "kr.inode.pkimport")
+        sc.httpMaximumConnectionsPerHost = 2 // set to 2, but not works cause access by ip
+        sc.timeoutIntervalForRequest = 10
+        sc.requestCachePolicy = .reloadIgnoringLocalCacheData
+        backgroundSession = URLSession(configuration: sc, delegate: self, delegateQueue: nil)
+        resumeTasks()
+
         NotificationCenter.default.addObserver(forName: .UIApplicationWillResignActive, object: nil, queue: .main) { (notification) in
             self.collectionView?.alpha = 0
         }
@@ -63,16 +70,12 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         NotificationCenter.default.addObserver(forName: .UIApplicationDidBecomeActive, object: nil, queue: .main) { (notification) in
             self.collectionView?.alpha = 1
             self.collectionViewLayout.invalidateLayout()
+            self.resumeTasks()
         }
         
         NotificationCenter.default.addObserver(forName: .UIDeviceOrientationDidChange, object: nil, queue: .current) { (notification) in
             self.collectionViewLayout.invalidateLayout()
         }
-        
-        let sc = URLSessionConfiguration.background(withIdentifier: "kr.inode.pkimport")
-        sc.httpMaximumConnectionsPerHost = 2 // set to 2, but not works cause access by ip
-        sc.timeoutIntervalForRequest = 10
-        backgroundSession = URLSession(configuration: sc, delegate: self, delegateQueue: nil)
         
         updateUI()
     }
@@ -105,6 +108,25 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         super.willTransition(to: newCollection, with: coordinator)
         
         collectionViewLayout.invalidateLayout()
+    }
+    
+    func resumeTasks() {
+        backgroundSession?.getTasksWithCompletionHandler({ (dataTasks, uploadTasks, downloadTasks) in
+            downloadTasks.forEach({ (task) in
+                print(task.state.rawValue)
+                switch task.state {
+                case .running:
+                    task.suspend()
+                    fallthrough
+                case .suspended:
+                    task.resume()
+                case .canceling:
+                    break
+                case .completed:
+                    break
+                }
+            })
+        })
     }
     
     func grantPhotoAcess(_ status: PHAuthorizationStatus, _ successHandler: @escaping () -> Void) -> Void {
