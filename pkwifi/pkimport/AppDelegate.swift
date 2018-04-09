@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Photos
+import UserNotifications
 
 enum AppState: Int, Codable {
     case Launch
@@ -23,6 +23,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var backgroundCompletionHandler: (() -> Void)?
     var state = AppState.Launch
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        application.applicationIconBadgeNumber = 0
+    }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
         coder.encode(state.rawValue, forKey: "AppState")

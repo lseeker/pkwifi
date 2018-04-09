@@ -21,6 +21,7 @@
 		75583347205ED8BC0004DAE2 /* PhotoListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75583346205ED8BC0004DAE2 /* PhotoListResponse.swift */; };
 		755935EC2066549000503FFD /* CameraError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755935EB2066549000503FFD /* CameraError.swift */; };
 		75945FD4207797110027F637 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75945FD3207797110027F637 /* LaunchScreen.storyboard */; };
+		759500B7207B729600F0B54B /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 759500B6207B729600F0B54B /* UserNotifications.framework */; };
 		759817F920021F02004ACE35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759817F820021F02004ACE35 /* AppDelegate.swift */; };
 		7598180320021F02004ACE35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7598180120021F02004ACE35 /* Main.storyboard */; };
 		7598180520021F02004ACE35 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7598180420021F02004ACE35 /* Assets.xcassets */; };
@@ -70,6 +71,7 @@
 		75583346205ED8BC0004DAE2 /* PhotoListResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoListResponse.swift; sourceTree = "<group>"; };
 		755935EB2066549000503FFD /* CameraError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraError.swift; sourceTree = "<group>"; };
 		75945FD3207797110027F637 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		759500B6207B729600F0B54B /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		759817F520021F02004ACE35 /* pkimport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pkimport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		759817F820021F02004ACE35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7598180220021F02004ACE35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				759500B7207B729600F0B54B /* UserNotifications.framework in Frameworks */,
 				B6F42AACE730E7E4E0ED69CB /* Pods_pkimport.framework in Frameworks */,
 				750F0950206EAE8A0015DF34 /* Photos.framework in Frameworks */,
 				751EC1932065468E00CFFEB4 /* NetworkExtension.framework in Frameworks */,
@@ -130,6 +133,7 @@
 		0EEB3E609957B1A354DDB83B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				759500B6207B729600F0B54B /* UserNotifications.framework */,
 				750F094F206EAE890015DF34 /* Photos.framework */,
 				751EC1922065468E00CFFEB4 /* NetworkExtension.framework */,
 				FF6A75DBBB9BF1D2BFB1948F /* Pods_pkimport.framework */,

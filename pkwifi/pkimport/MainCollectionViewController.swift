@@ -8,6 +8,7 @@
 
 import UIKit
 import Photos
+import UserNotifications
 import Kingfisher
 
 private let photoCellreuseIdentifier = "PhotoCell"
@@ -200,7 +201,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     @IBAction func importButtonPushed(_ sender: Any) {
         tasks.removeAll()
         
-        grantPhotoAcess(PHPhotoLibrary.authorizationStatus()) {
+        self.grantPhotoAcess(PHPhotoLibrary.authorizationStatus()) {
             let albumName = Camera.shared.props?.model ?? "PK Import"
             let options = PHFetchOptions()
             options.predicate = NSPredicate(format: "localizedTitle=%@", albumName)
@@ -239,27 +240,29 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
                     return
                 }
                 
-                DispatchQueue.main.async {
-                    let selected = self.collectionView?.indexPathsForSelectedItems
-                    if selected?.isEmpty ?? true {
-                        // import all photos
-                        for (idx, photo) in self.filtered.enumerated() {
-                            if photo.state != .Imported {
-                                self.startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
+                // check notification available
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                    DispatchQueue.main.async {
+                        let selected = self.collectionView?.indexPathsForSelectedItems
+                        if selected?.isEmpty ?? true {
+                            // import all photos
+                            for (idx, photo) in self.filtered.enumerated() {
+                                if photo.state != .Imported {
+                                    self.startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
+                                }
                             }
+                        } else {
+                            // import selected photos
+                            for indexPath in selected!.sorted() {
+                                self.startDownload(self.filtered[indexPath.item], indexPath: indexPath)
+                            }
+                            // clean up selection for futher states change
+                            self.collectionView?.selectItem(at: nil, animated: false, scrollPosition: [])
                         }
-                    } else {
-                        // import selected photos
-                        for indexPath in selected!.sorted() {
-                            self.startDownload(self.filtered[indexPath.item], indexPath: indexPath)
-                        }
-                        // clean up selection for futher states change
-                        self.collectionView?.selectItem(at: nil, animated: false, scrollPosition: [])
                     }
-                }
-            })
-            
-        }
+                } // end of notification grant
+            }) // load props finished
+        } // end of grant photo
     }
     
     private func startDownload(_ photo: PhotoCellData, indexPath: IndexPath) {
@@ -473,11 +476,11 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             return lastSize
         }
         
-        var count = ceil((view.frame.width - 16) / 160)
+        var count = ceil((view.frame.width - 8) / 160)
         if count < 3 {
             count = 3
         }
-        let width = (view.frame.width - 16) / count - 8
+        let width = (view.frame.width - 8) / count - 8
         let height = 120 * width / 160
         
         lastWidth = view.frame.width
@@ -502,10 +505,12 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        var cancel = false
         if let error = error, let indexPath = self.tasks[task.taskIdentifier] {
             debugPrint("url task fail with \(error)")
             DispatchQueue.main.async {
                 if (error as? URLError)?.code == URLError.cancelled {
+                    cancel = true
                     self.filtered[indexPath.item].state = .Select
                     self.collectionView?.selectItem(at: indexPath, animated: false, scrollPosition: [])
                 } else {
@@ -522,6 +527,10 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             DispatchQueue.main.async {
                 self.appDelegate.state = .Select
                 self.updateUI()
+                let alert = cancel ? UIAlertController(title: NSLocalizedString("Cancelled", comment: "cancelled alert title"), message: NSLocalizedString("Photo import cancelled", comment: "cancelled alert message"), preferredStyle: .alert)
+                    : UIAlertController(title: NSLocalizedString("Complete", comment: "complete alert title"), message: NSLocalizedString("Photo import completed", comment: "complete alert message"), preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "alert ok button"), style: .default))
+                self.present(alert, animated: true)
             }
         }
     }
@@ -607,6 +616,18 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
                 completionHandler()
                 appDelegate.backgroundCompletionHandler = nil
             }
+            
+            let notiCenter = UNUserNotificationCenter.current()
+            notiCenter.getNotificationSettings(completionHandler: { (settings) in
+                if settings.authorizationStatus == .authorized {
+                    let content = UNMutableNotificationContent()
+                    content.title = NSLocalizedString("Import finished", comment: "import finish notification")
+                    content.sound = UNNotificationSound.default()
+                    content.badge = 1
+                    
+                    notiCenter.add(UNNotificationRequest(identifier: "kr.inode.pkimport", content: content, trigger: nil))
+                }
+            })
         }
     }
     
