@@ -121,7 +121,7 @@
                         <viewLayoutGuide key="safeArea" id="fKB-Uf-gGn"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem title="ALL" image="OrderAsc" style="plain" id="Su8-YG-tfd">
+                        <barButtonItem image="OrderAsc" style="plain" id="Su8-YG-tfd">
                             <connections>
                                 <action selector="filterButtonPushed:" destination="SA2-S4-tJS" id="Urp-gp-RNK"/>
                             </connections>

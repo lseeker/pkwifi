@@ -106,6 +106,11 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - Actions
     
     func beginImport() {
+        // compat states on import
+        states = states.filter { (pair) -> Bool in
+            return pair.value == .Imported
+        }
+        
         let selected = self.collectionView?.indexPathsForSelectedItems
         
         if selected?.isEmpty ?? true {
@@ -339,6 +344,13 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         if let parent = parent as? MainControlViewController {
             parent.updateUI()
         }
+        
+        // if state contains none, will cancelled
+        let alert = states.values.contains(.None) ? UIAlertController(title: NSLocalizedString("Cancelled", comment: "cancelled alert title"), message: NSLocalizedString("Import cancelled", comment: "cancelled alert message"), preferredStyle: .alert)
+                           : UIAlertController(title: NSLocalizedString("Completed", comment: "complete alert title"), message: NSLocalizedString("Import completed", comment: "complete alert message"), preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "alert ok button"), style: .default))
+                        self.present(alert, animated: true)
+
     }
     
     @discardableResult
