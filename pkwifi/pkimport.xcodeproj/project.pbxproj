@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		750988EB20693E5D00960527 /* PhotoCellData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750988EA20693E5D00960527 /* PhotoCellData.swift */; };
 		750F0950206EAE8A0015DF34 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 750F094F206EAE890015DF34 /* Photos.framework */; };
 		751EC1932065468E00CFFEB4 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 751EC1922065468E00CFFEB4 /* NetworkExtension.framework */; };
 		751EC1952065D69A00CFFEB4 /* CameraProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751EC1942065D69A00CFFEB4 /* CameraProperties.swift */; };
@@ -29,6 +28,10 @@
 		7598181E20021F02004ACE35 /* pkwifiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7598181D20021F02004ACE35 /* pkwifiUITests.swift */; };
 		75B1B8AE206EB82300F54553 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75B1B8AC206EB82300F54553 /* Localizable.strings */; };
 		75B1B8B4206EB86600F54553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75B1B8B2206EB86500F54553 /* InfoPlist.strings */; };
+		75F65938207F795900164976 /* MainControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F65937207F795900164976 /* MainControlViewController.swift */; };
+		75F6593A207FA56300164976 /* PhotoImportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F65939207FA56300164976 /* PhotoImportManager.swift */; };
+		75F65941207FC24E00164976 /* PhotoImportError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F65940207FC24E00164976 /* PhotoImportError.swift */; };
+		75F659432080C03100164976 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F659422080C03100164976 /* Enums.swift */; };
 		B6F42AACE730E7E4E0ED69CB /* Pods_pkimport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6A75DBBB9BF1D2BFB1948F /* Pods_pkimport.framework */; };
 		D930F0C4EEBDD7DCE43C27D8 /* Pods_pkimportUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B529A4DF53137BB67674872A /* Pods_pkimportUITests.framework */; };
 		DA729C253F7234725F9A0A19 /* Pods_pkimportTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAC1255B620CEDAC8E2A06AF /* Pods_pkimportTests.framework */; };
@@ -55,7 +58,6 @@
 		20ADBBB29FBC1197270411EA /* Pods-pkwifiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiTests/Pods-pkwifiTests.debug.xcconfig"; sourceTree = "<group>"; };
 		3218D47C27DB922B631CE0D6 /* Pods-pkwifi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.debug.xcconfig"; sourceTree = "<group>"; };
 		3441C9956A8EBE72DADB7EE7 /* Pods-pkwifi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifi.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifi/Pods-pkwifi.release.xcconfig"; sourceTree = "<group>"; };
-		750988EA20693E5D00960527 /* PhotoCellData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCellData.swift; sourceTree = "<group>"; };
 		750F094F206EAE890015DF34 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		750F0951206EB4570015DF34 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
 		751EC1912065468E00CFFEB4 /* pkimport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = pkimport.entitlements; sourceTree = "<group>"; };
@@ -85,6 +87,10 @@
 		75A60579206C1CE500718A02 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		75B1B8AD206EB82300F54553 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		75B1B8B3206EB86500F54553 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		75F65937207F795900164976 /* MainControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainControlViewController.swift; sourceTree = "<group>"; };
+		75F65939207FA56300164976 /* PhotoImportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportManager.swift; sourceTree = "<group>"; };
+		75F65940207FC24E00164976 /* PhotoImportError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportError.swift; sourceTree = "<group>"; };
+		75F659422080C03100164976 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		7B42387EFD41C4175EBB2995 /* Pods-pkwifiUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiUITests/Pods-pkwifiUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		8802943BC19F49049C505803 /* Pods-pkwifiUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiUITests/Pods-pkwifiUITests.release.xcconfig"; sourceTree = "<group>"; };
 		993DCF2E223D136A88AC6F24 /* Pods-pkwifiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pkwifiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-pkwifiTests/Pods-pkwifiTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -162,17 +168,16 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		75583339205AB29E0004DAE2 /* Model */ = {
+		75583339205AB29E0004DAE2 /* CameraAccess */ = {
 			isa = PBXGroup;
 			children = (
 				7558333E205ABB180004DAE2 /* Camera.swift */,
+				751EC1942065D69A00CFFEB4 /* CameraProperties.swift */,
 				75583346205ED8BC0004DAE2 /* PhotoListResponse.swift */,
 				7558333A205AB2C40004DAE2 /* PhotoPath.swift */,
-				751EC1942065D69A00CFFEB4 /* CameraProperties.swift */,
 				755935EB2066549000503FFD /* CameraError.swift */,
-				750988EA20693E5D00960527 /* PhotoCellData.swift */,
 			);
-			path = Model;
+			path = CameraAccess;
 			sourceTree = "<group>";
 		};
 		759817EC20021F01004ACE35 = {
@@ -205,13 +210,16 @@
 				75B1B8AC206EB82300F54553 /* Localizable.strings */,
 				75A60578206C1CE500718A02 /* Info.plist */,
 				751EC1912065468E00CFFEB4 /* pkimport.entitlements */,
-				75583339205AB29E0004DAE2 /* Model */,
+				75583339205AB29E0004DAE2 /* CameraAccess */,
+				75F6593B207FA5F600164976 /* Import */,
 				759817F820021F02004ACE35 /* AppDelegate.swift */,
 				7598180120021F02004ACE35 /* Main.storyboard */,
 				7598180420021F02004ACE35 /* Assets.xcassets */,
+				75F65937207F795900164976 /* MainControlViewController.swift */,
 				75583340205E77230004DAE2 /* MainCollectionViewController.swift */,
 				75583342205EA5F40004DAE2 /* PhotoCollectionViewCell.swift */,
 				751EC1962065DC0400CFFEB4 /* ConnectViewController.swift */,
+				75F659422080C03100164976 /* Enums.swift */,
 			);
 			path = pkimport;
 			sourceTree = "<group>";
@@ -234,6 +242,15 @@
 				7598181F20021F02004ACE35 /* Info.plist */,
 			);
 			path = pkimportUITests;
+			sourceTree = "<group>";
+		};
+		75F6593B207FA5F600164976 /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				75F65939207FA56300164976 /* PhotoImportManager.swift */,
+				75F65940207FC24E00164976 /* PhotoImportError.swift */,
+			);
+			path = Import;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -541,14 +558,17 @@
 			files = (
 				7558333B205AB2C40004DAE2 /* PhotoPath.swift in Sources */,
 				755935EC2066549000503FFD /* CameraError.swift in Sources */,
-				750988EB20693E5D00960527 /* PhotoCellData.swift in Sources */,
 				751EC1952065D69A00CFFEB4 /* CameraProperties.swift in Sources */,
 				75583347205ED8BC0004DAE2 /* PhotoListResponse.swift in Sources */,
 				759817F920021F02004ACE35 /* AppDelegate.swift in Sources */,
 				751EC1972065DC0400CFFEB4 /* ConnectViewController.swift in Sources */,
+				75F6593A207FA56300164976 /* PhotoImportManager.swift in Sources */,
+				75F659432080C03100164976 /* Enums.swift in Sources */,
 				75583341205E77230004DAE2 /* MainCollectionViewController.swift in Sources */,
+				75F65941207FC24E00164976 /* PhotoImportError.swift in Sources */,
 				75583343205EA5F40004DAE2 /* PhotoCollectionViewCell.swift in Sources */,
 				7558333F205ABB180004DAE2 /* Camera.swift in Sources */,
+				75F65938207F795900164976 /* MainControlViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

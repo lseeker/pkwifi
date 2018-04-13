@@ -10,27 +10,64 @@ import UIKit
 import Kingfisher
 
 class PhotoCollectionViewCell: UICollectionViewCell {
-    private var lastState = PhotoCellState.Select
-    
-    var cellData: PhotoCellData? {
+    var photoPath: PhotoPath? {
         didSet(old) {
-            if old?.photoPath != cellData?.photoPath {
+            if old != photoPath {
                 thumbnail.kf.cancelDownloadTask()
-                name.text = cellData?.photoPath.file
+                name.text = photoPath?.file
                 thumbnail.image = nil
-                thumbnail.kf.setImage(with: cellData?.photoPath.thumbnailURL)
+                thumbnail.kf.setImage(with: photoPath?.thumbnailURL)
             }
-            
-            if old?.state != cellData?.state {
-                update()
+        }
+    }
+    
+    var state = PhotoImportState.None {
+        didSet {
+            switch state {
+            case .None:
+                progressView.progress = 0
+                activityIndicator.stopAnimating()
+                if isSelected {
+                    thumbnail.alpha = 0.7
+                    selectedImage.image = #imageLiteral(resourceName: "BlueCheckSelected")
+                } else {
+                    thumbnail.alpha = 1
+                    selectedImage.image = nil
+                }
+            case .StandBy:
+                thumbnail.alpha = 0.7
+                progressView.progress = 0
+                activityIndicator.stopAnimating()
+                selectedImage.image = #imageLiteral(resourceName: "BlueCheckUnselected")
+            case .Importing:
+                activityIndicator.isHidden = false
+                activityIndicator.startAnimating()
+                selectedImage.image = nil
+            case .Imported:
+                thumbnail.alpha = 1
+                progressView.progress = 0
+                activityIndicator.stopAnimating()
+                selectedImage.image = #imageLiteral(resourceName: "GreenCheckSelected")
+            case .Error:
+                progressView.progress = 0
+                activityIndicator.stopAnimating()
+                selectedImage.image = #imageLiteral(resourceName: "ErrorCheck")
             }
         }
     }
     
     override var isSelected: Bool {
         didSet {
-            if cellData?.state == .Select || cellData?.state == .Error {
-                updateOnSelect()
+            if isSelected {
+                thumbnail.alpha = 0.7
+                selectedImage.image = #imageLiteral(resourceName: "BlueCheckSelected")
+            } else {
+                if state == .Error {
+                    selectedImage.image = #imageLiteral(resourceName: "ErrorCheck")
+                } else {
+                    thumbnail.alpha = 1
+                    selectedImage.image = nil
+                }
             }
         }
     }
@@ -40,51 +77,4 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var selectedImage: UIImageView!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
-    private func updateOnSelect() {
-        if isSelected {
-            thumbnail.alpha = 0.7
-            selectedImage.image = #imageLiteral(resourceName: "BlueCheckSelected")
-        } else {
-            if cellData?.state == .Error {
-                selectedImage.image = #imageLiteral(resourceName: "ErrorCheck")
-            } else {
-                thumbnail.alpha = 1
-                selectedImage.image = nil
-            }
-        }
-    }
-    
-    func update() {
-        if lastState == cellData?.state {
-            return
-        }
-        
-        switch cellData!.state {
-        case .Select:
-            progressView.progress = 0
-            activityIndicator.stopAnimating()
-            updateOnSelect()
-        case .Ready:
-            thumbnail.alpha = 0.7
-            progressView.progress = 0
-            activityIndicator.stopAnimating()
-            selectedImage.image = #imageLiteral(resourceName: "BlueCheckUnselected")
-        case .Importing:
-            activityIndicator.isHidden = false
-            activityIndicator.startAnimating()
-            selectedImage.image = nil
-        case .Imported:
-            thumbnail.alpha = 1
-            progressView.progress = 0
-            activityIndicator.stopAnimating()
-            selectedImage.image = #imageLiteral(resourceName: "GreenCheckSelected")
-        case .Error:
-            progressView.progress = 0
-            activityIndicator.stopAnimating()
-            selectedImage.image = #imageLiteral(resourceName: "ErrorCheck")
-        }
-        
-        lastState = cellData?.state ?? .Select
-    }
 }

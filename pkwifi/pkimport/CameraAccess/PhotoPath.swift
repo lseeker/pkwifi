@@ -9,10 +9,11 @@
 import Foundation
 import UIKit
 
-struct PhotoPath: Hashable, Codable
+class PhotoPath: Codable, Hashable
 {
     let dir: String
     let file: String
+    var assetIdentifier: String?
     
     init(dir: String, file: String) {
         self.dir = dir
@@ -33,11 +34,16 @@ struct PhotoPath: Hashable, Codable
     
     var thumbnailURL: URL {
         get {
-            var query = ""
-            if let storage = Camera.shared.activeStorage {
-                query = "&storage=\(storage)"
+            var query = "size="
+            if file.hasSuffix(".AVI") || file.hasSuffix(".MOV") {
+                query += "view"
+            } else {
+                query += "thumb"
             }
-            return URL(string: "http://192.168.0.1/v1/photos/\(dir)/\(file)?size=thumb\(query)")!
+            if let storage = Camera.shared.activeStorage {
+                query += "&storage=\(storage)"
+            }
+            return URL(string: "http://192.168.0.1/v1/photos/\(dir)/\(file)?\(query)")!
         }
     }
     
@@ -49,5 +55,17 @@ struct PhotoPath: Hashable, Codable
             }
             return URL(string: "http://192.168.0.1/v1/photos/\(dir)/\(file)?size=full\(query)")!
         }
+    }
+    
+    var hashValue: Int {
+        get { return dir.hashValue ^ file.hashValue &* 16777619 }
+    }
+    
+    static func == (lhs: PhotoPath, rhs: PhotoPath) -> Bool {
+        if lhs.hashValue != rhs.hashValue {
+            return false
+        }
+        
+        return lhs.dir == rhs.dir && lhs.file == rhs.file
     }
 }

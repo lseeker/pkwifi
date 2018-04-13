@@ -5,6 +5,7 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,13 +18,15 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" id="7Cb-0S-lYz">
                         <rect key="frame" x="0.0" y="20" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" id="JDL-0a-Ujc">
                         <rect key="frame" x="0.0" y="980" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </toolbar>
                     <connections>
-                        <segue destination="XQU-sc-zzy" kind="relationship" relationship="rootViewController" id="Sua-pq-BXU"/>
+                        <segue destination="SA2-S4-tJS" kind="relationship" relationship="rootViewController" id="hgf-lc-opS"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QKj-lN-CNW" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -31,6 +34,155 @@
             <point key="canvasLocation" x="-808" y="-986"/>
         </scene>
         <!--PK Import-->
+        <scene sceneID="frV-9K-eOD">
+            <objects>
+                <viewController storyboardIdentifier="MainControlViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SA2-S4-tJS" customClass="MainControlViewController" customModule="pkimport" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" restorationIdentifier="MainView" id="mz5-Kw-9z9">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" restorationIdentifier="MainContainerView" translatesAutoresizingMaskIntoConstraints="NO" id="DLd-1T-nRv">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <connections>
+                                    <segue destination="XQU-sc-zzy" kind="embed" identifier="Embed" id="TeL-2L-BSY"/>
+                                </connections>
+                            </containerView>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yts-9M-LHR">
+                                <rect key="frame" x="0.0" y="936" width="768" height="44"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="6LV-oo-nPv">
+                                    <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="4Nz-pP-PhB">
+                                            <rect key="frame" x="8" y="8" width="368" height="29"/>
+                                            <segments>
+                                                <segment title="ALL"/>
+                                                <segment title="RAW"/>
+                                                <segment title="JPG"/>
+                                                <segment title="MOV"/>
+                                            </segments>
+                                            <connections>
+                                                <action selector="filterChanged:" destination="SA2-S4-tJS" eventType="valueChanged" id="exk-Fa-R9e"/>
+                                            </connections>
+                                        </segmentedControl>
+                                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CZr-8k-SrG">
+                                            <rect key="frame" x="392" y="8" width="368" height="29"/>
+                                            <segments>
+                                                <segment title="DATE"/>
+                                                <segment title="RECENT"/>
+                                            </segments>
+                                            <connections>
+                                                <action selector="sortOrderChanged:" destination="SA2-S4-tJS" eventType="valueChanged" id="YyG-jG-HOo"/>
+                                            </connections>
+                                        </segmentedControl>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="4Nz-pP-PhB" firstAttribute="top" secondItem="6LV-oo-nPv" secondAttribute="top" constant="8" id="FFq-JR-3Vv"/>
+                                        <constraint firstItem="4Nz-pP-PhB" firstAttribute="leading" secondItem="6LV-oo-nPv" secondAttribute="leadingMargin" id="HIz-Im-1XP"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="4Nz-pP-PhB" secondAttribute="trailing" id="KQU-7u-ibc"/>
+                                        <constraint firstItem="4Nz-pP-PhB" firstAttribute="width" secondItem="CZr-8k-SrG" secondAttribute="width" id="Ko5-bz-9b4"/>
+                                        <constraint firstItem="CZr-8k-SrG" firstAttribute="top" secondItem="6LV-oo-nPv" secondAttribute="top" constant="8" id="ctA-fK-3uE">
+                                            <variation key="widthClass=compact" constant="45"/>
+                                        </constraint>
+                                        <constraint firstAttribute="trailingMargin" secondItem="CZr-8k-SrG" secondAttribute="trailing" id="eKO-UW-bbd"/>
+                                        <constraint firstItem="CZr-8k-SrG" firstAttribute="leading" secondItem="4Nz-pP-PhB" secondAttribute="trailing" constant="16" id="jf0-tn-sdM"/>
+                                    </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="KQU-7u-ibc"/>
+                                        </mask>
+                                    </variation>
+                                    <variation key="widthClass=compact">
+                                        <mask key="constraints">
+                                            <include reference="KQU-7u-ibc"/>
+                                            <exclude reference="jf0-tn-sdM"/>
+                                        </mask>
+                                    </variation>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" priority="750" id="uB8-lO-h86"/>
+                                    <constraint firstAttribute="height" constant="44" id="wDO-zZ-aGN">
+                                        <variation key="widthClass=compact" constant="81"/>
+                                    </constraint>
+                                </constraints>
+                                <blurEffect style="dark"/>
+                            </visualEffectView>
+                        </subviews>
+                        <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="yts-9M-LHR" firstAttribute="leading" secondItem="fKB-Uf-gGn" secondAttribute="leading" id="0Bp-xv-Hjd"/>
+                            <constraint firstItem="DLd-1T-nRv" firstAttribute="leading" secondItem="mz5-Kw-9z9" secondAttribute="leading" id="BmN-V1-neT"/>
+                            <constraint firstAttribute="trailing" secondItem="DLd-1T-nRv" secondAttribute="trailing" id="akv-88-rlX"/>
+                            <constraint firstItem="fKB-Uf-gGn" firstAttribute="trailing" secondItem="yts-9M-LHR" secondAttribute="trailing" id="daF-3F-nZA"/>
+                            <constraint firstAttribute="top" secondItem="DLd-1T-nRv" secondAttribute="top" id="gwj-nf-h1j"/>
+                            <constraint firstItem="DLd-1T-nRv" firstAttribute="bottom" secondItem="mz5-Kw-9z9" secondAttribute="bottom" id="o7m-8D-2jh"/>
+                            <constraint firstItem="fKB-Uf-gGn" firstAttribute="bottom" secondItem="yts-9M-LHR" secondAttribute="bottom" id="oGg-vn-wH4"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="fKB-Uf-gGn"/>
+                    </view>
+                    <toolbarItems>
+                        <barButtonItem title="ALL" image="OrderAsc" style="plain" id="Su8-YG-tfd">
+                            <connections>
+                                <action selector="filterButtonPushed:" destination="SA2-S4-tJS" id="Urp-gp-RNK"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem width="40" style="plain" systemItem="fixedSpace" id="fl3-JM-P3y"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="baR-yt-Igi"/>
+                        <barButtonItem enabled="NO" title="No photos" style="plain" id="cCc-5u-ToI">
+                            <color key="tintColor" cocoaTouchSystemColor="lightTextColor"/>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="LUU-e8-zsx"/>
+                        <barButtonItem title="Select All" style="plain" id="B6j-6e-LBX">
+                            <connections>
+                                <action selector="selectButtonPushed:" destination="SA2-S4-tJS" id="W6o-bh-ITE"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="PK Import" id="PGy-gM-Yj9">
+                        <leftBarButtonItems>
+                            <barButtonItem systemItem="refresh" id="QH2-fE-HXZ">
+                                <connections>
+                                    <segue destination="c7m-Kb-ZpW" kind="presentation" identifier="ConnectCamera" id="7BK-X3-l3h"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem enabled="NO" title="sd1" id="AIO-FL-6Zq">
+                                <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="storageButtonPushed:" destination="SA2-S4-tJS" id="vtm-mp-voi"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" title="Import All" id="S0g-SI-bCY">
+                            <connections>
+                                <action selector="importButtonPushed:" destination="SA2-S4-tJS" id="5JM-jT-9Hy"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="bottomDescription" destination="cCc-5u-ToI" id="6JR-53-e3F"/>
+                        <outlet property="cancelButton" destination="dgb-vw-YqS" id="wJb-Np-jyM"/>
+                        <outlet property="filterButton" destination="Su8-YG-tfd" id="GmH-AD-48z"/>
+                        <outlet property="filterSegment" destination="4Nz-pP-PhB" id="eNe-nr-UhT"/>
+                        <outlet property="filterView" destination="yts-9M-LHR" id="s1g-vm-vIh"/>
+                        <outlet property="filterViewHeight" destination="wDO-zZ-aGN" id="xUk-1B-Cf7"/>
+                        <outlet property="importButton" destination="S0g-SI-bCY" id="YWP-dx-6rO"/>
+                        <outlet property="refreshButton" destination="QH2-fE-HXZ" id="acX-Z7-TSV"/>
+                        <outlet property="selectButton" destination="B6j-6e-LBX" id="l6Y-Bc-Ex2"/>
+                        <outlet property="sortOrderSegment" destination="CZr-8k-SrG" id="74Z-bN-ExR"/>
+                        <outlet property="storageButton" destination="AIO-FL-6Zq" id="AU9-sD-AmE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Acv-ft-f5V" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <barButtonItem systemItem="cancel" id="dgb-vw-YqS">
+                    <connections>
+                        <action selector="cancelButtonPushed:" destination="SA2-S4-tJS" id="awj-ES-15T"/>
+                    </connections>
+                </barButtonItem>
+            </objects>
+            <point key="canvasLocation" x="150" y="-986"/>
+        </scene>
+        <!--Main Collection View Controller-->
         <scene sceneID="lTm-qt-kq7">
             <objects>
                 <collectionViewController storyboardIdentifier="MainCollectionViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="XQU-sc-zzy" customClass="MainCollectionViewController" customModule="pkimport" customModuleProvider="target" sceneMemberID="viewController">
@@ -53,11 +205,11 @@
                                     <rect key="frame" x="0.0" y="0.0" width="160" height="120"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kcG-t1-qST">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kcG-t1-qST">
                                             <rect key="frame" x="0.0" y="0.0" width="160" height="120"/>
                                         </imageView>
                                         <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" translatesAutoresizingMaskIntoConstraints="NO" id="Q0l-hV-zkt">
-                                            <rect key="frame" x="0.0" y="119" width="160" height="2.5"/>
+                                            <rect key="frame" x="0.0" y="118.5" width="160" height="2.5"/>
                                             <color key="trackTintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </progressView>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Lq4-A8-FC1">
@@ -110,68 +262,12 @@
                             <outlet property="delegate" destination="XQU-sc-zzy" id="JAl-Rp-07a"/>
                         </connections>
                     </collectionView>
-                    <toolbarItems>
-                        <barButtonItem title="ALL" style="plain" id="Su8-YG-tfd">
-                            <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <connections>
-                                <action selector="filterButtonPushed:" destination="XQU-sc-zzy" id="lY4-JB-EOZ"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem width="40" style="plain" systemItem="fixedSpace" id="Q2W-tX-4eW"/>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Bjw-I7-8e5"/>
-                        <barButtonItem enabled="NO" title="No photos" style="plain" id="Vfl-tp-FWA">
-                            <color key="tintColor" cocoaTouchSystemColor="lightTextColor"/>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="7hv-05-msw"/>
-                        <barButtonItem title="Select All" style="plain" id="2Fu-HV-rWR">
-                            <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <connections>
-                                <action selector="selectButtonPushed:" destination="XQU-sc-zzy" id="ITz-wI-eGU"/>
-                            </connections>
-                        </barButtonItem>
-                    </toolbarItems>
-                    <navigationItem key="navigationItem" title="PK Import" id="lxd-xq-HIB">
-                        <leftBarButtonItems>
-                            <barButtonItem systemItem="refresh" id="iCK-uV-Vzq">
-                                <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <connections>
-                                    <segue destination="c7m-Kb-ZpW" kind="presentation" identifier="ConnectCamera" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="m8i-8N-dVm"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem enabled="NO" title="sd1" id="MY6-ep-7HH">
-                                <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <connections>
-                                    <action selector="storageButtonPushed:" destination="XQU-sc-zzy" id="WgJ-96-FoA"/>
-                                </connections>
-                            </barButtonItem>
-                        </leftBarButtonItems>
-                        <barButtonItem key="rightBarButtonItem" title="Import All" id="xQk-cT-C0B">
-                            <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <connections>
-                                <action selector="importButtonPushed:" destination="XQU-sc-zzy" id="Gb4-bh-Hvj"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="bottomDescription" destination="Vfl-tp-FWA" id="TGG-d2-B6b"/>
-                        <outlet property="cancelButton" destination="dgb-vw-YqS" id="RW9-a1-MVu"/>
-                        <outlet property="filterButton" destination="Su8-YG-tfd" id="ufm-Dq-rZ7"/>
-                        <outlet property="importButton" destination="xQk-cT-C0B" id="d98-5x-oi2"/>
-                        <outlet property="refreshButton" destination="iCK-uV-Vzq" id="zl5-lH-zm0"/>
-                        <outlet property="selectButton" destination="2Fu-HV-rWR" id="K61-EO-5l0"/>
-                        <outlet property="storageButton" destination="MY6-ep-7HH" id="FwH-3A-ENM"/>
-                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Pd-ih-DQB" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <barButtonItem systemItem="cancel" id="dgb-vw-YqS">
-                    <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <connections>
-                        <action selector="cancelButtonPushed:" destination="XQU-sc-zzy" id="vag-4R-pio"/>
-                    </connections>
-                </barButtonItem>
             </objects>
-            <point key="canvasLocation" x="-27" y="-986"/>
+            <point key="canvasLocation" x="1064" y="-987"/>
         </scene>
         <!--Connect View Controller-->
         <scene sceneID="UOG-5W-Of3">
@@ -212,7 +308,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zoD-oo-dpM" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="hwy-rb-8eV" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="882.8125" y="-984.37499999999989"/>
+            <point key="canvasLocation" x="1064" y="224"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="OrderAsc" width="24" height="24"/>
+    </resources>
 </document>

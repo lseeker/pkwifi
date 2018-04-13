@@ -7,40 +7,55 @@
 //
 
 import UIKit
-import Photos
-import UserNotifications
 import Kingfisher
 
 private let photoCellreuseIdentifier = "PhotoCell"
 
-private enum FilterType: String {
-    case ALL = "ALL"
-    case RAW = "RAW"
-    case JPG = "JPG"
+enum PhotoImportState: Int, Codable {
+    case None
+    case StandBy
+    case Importing
+    case Imported
+    case Error
 }
 
-class MainCollectionViewController: UICollectionViewController, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout, URLSessionDownloadDelegate, UIDataSourceModelAssociation {
+class MainCollectionViewController: UICollectionViewController, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout, UIDataSourceModelAssociation, PhotoImportManagerDelegate {
     
-    @IBOutlet weak var refreshButton: UIBarButtonItem!
-    @IBOutlet weak var storageButton: UIBarButtonItem!
-    @IBOutlet var importButton: UIBarButtonItem!
-    @IBOutlet var cancelButton: UIBarButtonItem!
-    @IBOutlet weak var filterButton: UIBarButtonItem!
-    @IBOutlet weak var selectButton: UIBarButtonItem!
-    @IBOutlet weak var bottomDescription: UIBarButtonItem!
+    private let importManager = PhotoImportManager.shared
+    private var filtered = [PhotoPath]()
+    private var states = [PhotoPath: PhotoImportState]()
     
-    private var filterType = FilterType.ALL
+    var selectionChanged: ((Int) -> Void)?
+    var filterType = FilterType.ALL {
+        didSet(old) {
+            if old != filterType {
+                applyFilter()
+            }
+        }
+    }
+    var sortOrder = SortOrder.Date {
+        didSet(old) {
+            if old != sortOrder {
+                filtered.reverse()
+                collectionView?.reloadData()
+            }
+        }
+    }
     
-    private var cellDataArray = [PhotoCellData]()
-    private var tasks = [Int: IndexPath]()
-    private var filtered = [PhotoCellData]()
+    var selectedCount: Int {
+        get {
+            return collectionView?.indexPathsForSelectedItems?.count ?? 0
+        }
+    }
+    var totalCount: Int {
+        get {
+            return filtered.count
+        }
+    }
     
     private var lastWidth: CGFloat = 0
     private var lastSize = CGSize()
-    
-    var backgroundSession: URLSession?
-    
-    var appDelegate: AppDelegate {
+    private var appDelegate: AppDelegate {
         get {
             return UIApplication.shared.delegate as! AppDelegate
         }
@@ -49,20 +64,9 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        filterType = FilterType(rawValue: UserDefaults.standard.string(forKey: "FilterType") ?? FilterType.ALL.rawValue) ?? FilterType.ALL
-        filterButton.title = filterType.rawValue
-        
         collectionView?.prefetchDataSource = self
         collectionView?.allowsMultipleSelection = true
-        bottomDescription.setTitleTextAttributes([.foregroundColor : UIColor.lightText], for: .disabled)
-
-        let sc = URLSessionConfiguration.background(withIdentifier: "kr.inode.pkimport")
-        sc.httpMaximumConnectionsPerHost = 2 // set to 2, but not works cause access by ip
-        sc.timeoutIntervalForRequest = 10
-        sc.requestCachePolicy = .reloadIgnoringLocalCacheData
-        backgroundSession = URLSession(configuration: sc, delegate: self, delegateQueue: nil)
-        resumeTasks()
-
+        
         NotificationCenter.default.addObserver(forName: .UIApplicationWillResignActive, object: nil, queue: .main) { (notification) in
             self.collectionView?.alpha = 0
         }
@@ -70,38 +74,18 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         NotificationCenter.default.addObserver(forName: .UIApplicationDidBecomeActive, object: nil, queue: .main) { (notification) in
             self.collectionView?.alpha = 1
             self.collectionViewLayout.invalidateLayout()
-            self.resumeTasks()
         }
         
         NotificationCenter.default.addObserver(forName: .UIDeviceOrientationDidChange, object: nil, queue: .current) { (notification) in
             self.collectionViewLayout.invalidateLayout()
         }
-        
-        updateUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        importManager.delegate = self
         collectionViewLayout.invalidateLayout()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        switch appDelegate.state {
-        case .Launch:
-            fallthrough
-        case .Connect:
-            fallthrough
-        case .LoadList:
-            let vc = storyboard?.instantiateViewController(withIdentifier: "Connect")
-            present(vc!, animated: false, completion: nil)
-        case .Select:
-            break
-        case .Import:
-            break
-        }
     }
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -110,323 +94,131 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         collectionViewLayout.invalidateLayout()
     }
     
-    func resumeTasks() {
-        backgroundSession?.getTasksWithCompletionHandler({ (dataTasks, uploadTasks, downloadTasks) in
-            downloadTasks.forEach({ (task) in
-                switch task.state {
-                case .running:
-                    task.suspend()
-                    fallthrough
-                case .suspended:
-                    task.resume()
-                case .canceling:
-                    break
-                case .completed:
-                    break
-                }
-            })
-        })
-    }
-    
-    func grantPhotoAcess(_ status: PHAuthorizationStatus, _ successHandler: @escaping () -> Void) -> Void {
-        switch status {
-        case .denied:
-            fallthrough
-        case .restricted:
-            // show denied photo
-            let alert = UIAlertController(title: NSLocalizedString("Photos access", comment: "Photo denied alert title"), message: NSLocalizedString("Photos access required for operation.", comment: "Photo denied alert message"), preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Open Settings App", style: .default, handler: { (action) in
-                UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
-            }))
-            DispatchQueue.main.async {
-                self.present(alert, animated: true)
-            }
-        case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({ (status) in
-                self.grantPhotoAcess(status, successHandler)
-            })
-        case .authorized:
-            DispatchQueue.main.async {
-                successHandler()
-            }
-        }
-    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    func updateUI() {
-        storageButton.title = Camera.shared.activeStorage
-        
-        if appDelegate.state == .Import {
-            refreshButton.isEnabled = false
-            storageButton.isEnabled = false
-            navigationItem.rightBarButtonItem = cancelButton
-            filterButton.isEnabled = false
-            selectButton.isEnabled = false
-            bottomDescription.title = NSLocalizedString("Importing...", comment: "description title")
-        } else {
-            refreshButton.isEnabled = true
-            storageButton.isEnabled = Camera.shared.props?.storages.count ?? 0 > 1
-            navigationItem.rightBarButtonItem = importButton
-            filterButton.isEnabled = true
-            selectButton.isEnabled = true
-            
-            updateDescription()
-        }
+    private func indexPath(for photoPath: PhotoPath) -> IndexPath! {
+        return IndexPath(item: filtered.index(of: photoPath)!, section: 0)
     }
     
-    func updateDescription() {
-        let count = collectionView?.indexPathsForSelectedItems?.count ?? 0
+    // MARK: - Actions
+    
+    func beginImport() {
+        let selected = self.collectionView?.indexPathsForSelectedItems
         
-        if count > 0 {
-            importButton.title = NSLocalizedString("Import Selected", comment: "import button title")
-            selectButton.title = NSLocalizedString("Deselect All", comment: "select button title")
-            bottomDescription.title = "\(count) / \(filtered.count)"
-        } else {
-            importButton.title = NSLocalizedString("Import All", comment: "import button title")
-            selectButton.title = NSLocalizedString("Select All", comment: "select button title")
-            if filtered.isEmpty {
-                bottomDescription.title = NSLocalizedString("No Photos", comment: "description title")
+        if selected?.isEmpty ?? true {
+            if sortOrder == .Date {
+                for (idx, photo) in filtered.enumerated() {
+                    if states[photo] != .Imported {
+                        startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
+                    }
+                }
             } else {
-                bottomDescription.title = "\(filtered.count)"
-            }
-        }
-    }
-    
-    @IBAction func connectClosed(segue: UIStoryboardSegue) {
-        tasks.removeAll()
-        reloadPhotos()
-        navigationItem.title = Camera.shared.props?.model
-        appDelegate.state = .Select
-        updateUI()
-    }
-    
-    @IBAction func selectButtonPushed(_ sender: Any) {
-        if collectionView?.indexPathsForSelectedItems?.isEmpty ?? true {
-            for (idx, cellData) in filtered.enumerated() {
-                if cellData.state != .Imported {
-                    collectionView?.selectItem(at: IndexPath(item: idx, section: 0), animated: true, scrollPosition: [])
+                // Recent order
+                for (idx, photo) in filtered.enumerated().reversed() {
+                    if states[photo] != .Imported {
+                        startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
+                    }
                 }
             }
         } else {
-            // clear selection
-            collectionView?.selectItem(at: nil, animated: true, scrollPosition: [])
+            // import selected photos
+            let indexPaths = sortOrder == .Date ? selected!.sorted() : selected!.sorted().reversed()
+            // clean up selection for futher states change
+            self.collectionView?.selectItem(at: nil, animated: false, scrollPosition: [])
+            for indexPath in indexPaths {
+                self.startDownload(self.filtered[indexPath.item], indexPath: indexPath)
+            }
         }
-        
-        updateDescription()
     }
     
-    @IBAction func importButtonPushed(_ sender: Any) {
-        tasks.removeAll()
-        
-        self.grantPhotoAcess(PHPhotoLibrary.authorizationStatus()) {
-            let albumName = Camera.shared.props?.model ?? "PK Import"
-            let options = PHFetchOptions()
-            options.predicate = NSPredicate(format: "localizedTitle=%@", albumName)
-            var result = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumRegular, options: options)
-            if result.count == 0 {
-                // create album
-                try? PHPhotoLibrary.shared().performChangesAndWait {
-                    PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
-                }
-                result = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumRegular, options: options)
-            }
-            
-            if let collection = result.firstObject {
-                let ud = UserDefaults.standard
-                ud.set(collection.localIdentifier, forKey: "PHAssetCollectionKey")
-                ud.synchronize()
-            }
-            
-            self.appDelegate.state = .Import
-            self.updateUI()
-            
-            Camera.shared.loadProperties(completion: { (props, error) in
-                if let error = error {
-                    let alert = UIAlertController(title: NSLocalizedString("ERROR", comment: "alert title on import"), message: NSLocalizedString("Connetion to Camera lost.", comment: "alert message on import").appending("\n\(error.localizedDescription)"), preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: NSLocalizedString("Reconnect", comment: "alert button on import error"), style: .default) { (action) in
-                        self.performSegue(withIdentifier: "ConnectCamera", sender: nil)
-                    })
-                    alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "alert button on import error"), style: .cancel) { (action) in
-                        self.appDelegate.state = .Select
-                        self.updateUI()
-                    })
-                    
-                    DispatchQueue.main.async {
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                    return
-                }
-                
-                // check notification available
-                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-                    DispatchQueue.main.async {
-                        let selected = self.collectionView?.indexPathsForSelectedItems
-                        if selected?.isEmpty ?? true {
-                            // import all photos
-                            for (idx, photo) in self.filtered.enumerated() {
-                                if photo.state != .Imported {
-                                    self.startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
-                                }
-                            }
-                        } else {
-                            // import selected photos
-                            for indexPath in selected!.sorted() {
-                                self.startDownload(self.filtered[indexPath.item], indexPath: indexPath)
-                            }
-                            // clean up selection for futher states change
-                            self.collectionView?.selectItem(at: nil, animated: false, scrollPosition: [])
-                        }
-                    }
-                } // end of notification grant
-            }) // load props finished
-        } // end of grant photo
-    }
-    
-    private func startDownload(_ photo: PhotoCellData, indexPath: IndexPath) {
-        let task = backgroundSession!.downloadTask(with: photo.photoPath.downloadURL)
-        task.priority = URLSessionTask.highPriority
-        tasks[task.taskIdentifier] = indexPath
-        photo.state = .Ready
-        task.resume()
-        
+    private func startDownload(_ photoPath: PhotoPath, indexPath: IndexPath) {
+        importManager.beginImport(photoPath)
+        states[photoPath] = .StandBy
         if let cell = collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-            cell.update()
+            cell.state = .StandBy
         }
     }
     
-    @IBAction func cancelButtonPushed(_ sender: Any) {
-        backgroundSession?.getTasksWithCompletionHandler({ (dataTasks, updateTasks, downloadTasks) in
-            for task in downloadTasks {
-                task.cancel()
-            }
-        })
-    }
-    
-    @IBAction func filterButtonPushed(_ sender: Any) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.addAction(UIAlertAction(title: FilterType.ALL.rawValue, style: .default, handler: { (action) in
-            self.setFilterType(.ALL)
-        }))
-        actionSheet.addAction(UIAlertAction(title: FilterType.RAW.rawValue, style: .default, handler: { (action) in
-            self.setFilterType(.RAW)
-        }))
-        actionSheet.addAction(UIAlertAction(title: FilterType.JPG.rawValue, style: .default, handler: { (action) in
-            self.setFilterType(.JPG)
-        }))
-        
-        actionSheet.modalPresentationStyle = .popover
-        actionSheet.popoverPresentationController?.backgroundColor = UIColor(white: 0.2, alpha: 0.8)
-        actionSheet.popoverPresentationController?.barButtonItem = filterButton
-        actionSheet.view.tintColor = UIColor.orange
-        
-        present(actionSheet, animated: true)
-    }
-    
-    @IBAction func storageButtonPushed(_ sender: Any) {
-        guard let storages = Camera.shared.props?.storages else {
-            storageButton.isEnabled = false
-            return
-        }
-        
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        for storage in storages {
-            actionSheet.addAction(UIAlertAction(title: storage.name, style: .default, handler: { (action) in
-                Camera.shared.activeStorage = storage.name
-                self.performSegue(withIdentifier: "ConnectCamera", sender: nil)
-            }))
-        }
-        
-        actionSheet.modalPresentationStyle = .popover
-        actionSheet.popoverPresentationController?.backgroundColor = UIColor(white: 0.2, alpha: 0.8)
-        actionSheet.popoverPresentationController?.barButtonItem = storageButton
-        actionSheet.view.tintColor = UIColor.orange
-        
-        present(actionSheet, animated: true)
-    }
-    
-    private func setFilterType(_ filterType: FilterType) {
-        if self.filterType == filterType {
-            // not changed
-            return
-        }
-        
-        self.filterType = filterType
-        filterButton.title = filterType.rawValue
-        
-        let ud = UserDefaults.standard
-        ud.set(filterType.rawValue, forKey: "FilterType")
-        ud.synchronize()
-        
-        applyFilter()
-    }
-    
-    func reloadPhotos() {
-        cellDataArray.removeAll()
-        
+    private func applyFilter() {
         if let photoPaths = Camera.shared.photos {
-            cellDataArray.reserveCapacity(photoPaths.count)
-            
-            for photoPath in photoPaths {
-                cellDataArray.append(PhotoCellData(photoPath: photoPath))
+            switch filterType {
+            case .ALL:
+                filtered = photoPaths
+            case .RAW:
+                filtered = photoPaths.filter({ (photoPath) -> Bool in
+                    return photoPath.file.hasSuffix(".DNG") || photoPath.file.hasSuffix(".PEF")
+                })
+            case .JPG:
+                filtered = photoPaths.filter({ (photoPath) -> Bool in
+                    return photoPath.file.hasSuffix(".JPG")
+                })
+            case .MOV:
+                filtered = photoPaths.filter({ (photoPath) -> Bool in
+                    // timelapse = avi
+                    return photoPath.file.hasSuffix(".AVI") || photoPath.file.hasSuffix(".MOV")
+                })
             }
+            
+            if sortOrder == .Recent {
+                filtered.reverse()
+            }
+            
+            collectionView?.reloadData()
         }
         
+        selectionChanged?(0)
+    }
+    
+    func reload() {
+        states.removeAll()
         applyFilter()
     }
     
-    func applyFilter() {
-        switch filterType {
-        case .ALL:
-            filtered = cellDataArray
-        case .RAW:
-            filtered = cellDataArray.filter({ (cellData) -> Bool in
-                return !cellData.photoPath.file.hasSuffix(".JPG")
-            })
-        case .JPG:
-            filtered = cellDataArray.filter({ (cellData) -> Bool in
-                return cellData.photoPath.file.hasSuffix(".JPG")
-            })
+    func selectAll() {
+        for (idx, photoPath) in filtered.enumerated() {
+            if states[photoPath] != .Imported {
+                collectionView?.selectItem(at: IndexPath(item: idx, section: 0), animated: true, scrollPosition: [])
+            }
         }
-        
-        collectionView?.reloadData()
-        updateDescription()
+        selectionChanged?(selectedCount)
     }
+    
+    func deselectAll() {
+        collectionView?.selectItem(at: nil, animated: true, scrollPosition: [])
+        selectionChanged?(0)
+    }
+    
+    // MARK: - State restoration
     
     override func encodeRestorableState(with coder: NSCoder) {
         super.encodeRestorableState(with: coder)
         
-        let encoder = JSONEncoder()
-        coder.encode(tasks, forKey: "Tasks")
-        coder.encode(try? encoder.encode(cellDataArray), forKey: "CellDataArray")
+        coder.encode(try! JSONEncoder().encode(states), forKey: "States")
         if let offset = collectionView?.contentOffset {
             coder.encode(offset, forKey: "Offset")
+        }
+        if let selections = collectionView?.indexPathsForSelectedItems {
+            coder.encode(selections, forKey: "Selections")
         }
     }
     
     override func decodeRestorableState(with coder: NSCoder) {
-        let decoder = JSONDecoder()
-        tasks = coder.decodeObject(forKey: "Tasks") as! [Int : IndexPath]
-        cellDataArray = try! decoder.decode([PhotoCellData].self, from: coder.decodeObject(forKey: "CellDataArray") as! Data)
+        states = try! JSONDecoder().decode([PhotoPath : PhotoImportState].self, from: coder.decodeObject(forKey: "States") as! Data)
         applyFilter()
+        if let selections = coder.decodeObject(forKey: "Selections") as? [IndexPath] {
+            selections.forEach { (indexPath) in
+                collectionView?.selectItem(at: indexPath, animated: false, scrollPosition: [])
+            }
+        }
+        
         if let offset = coder.decodeObject(forKey: "Offset") as? String {
             collectionView?.contentOffset = CGPointFromString(offset)
         }
         
         super.decodeRestorableState(with: coder)
-    }
-    
-    // MARK: - Navigation
-    
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ConnectCamera" {
-            appDelegate.state = .Connect
-            bottomDescription.title = NSLocalizedString("Connecting...", comment: "description title")
-        }
     }
     
     // MARK: - UICollectionViewDataSource
@@ -443,7 +235,8 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: photoCellreuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
         
         // Configure the cell
-        cell.cellData = filtered[indexPath.item]
+        cell.photoPath = filtered[indexPath.item]
+        cell.state = states[cell.photoPath!] ?? .None
         
         return cell
     }
@@ -451,25 +244,24 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - UICollectionViewDataSourcePrefetching
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        let urls = indexPaths.map { filtered[$0.item].photoPath.thumbnailURL }
+        let urls = indexPaths.map { filtered[$0.item].thumbnailURL }
         ImagePrefetcher(urls: urls).start()
     }
     
     // MARK: - UICollectionViewDelegate
-    
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        // update cell for unvisible state changes
-        if let cell = cell as? PhotoCollectionViewCell {
-            cell.update()
+        if let state = states[filtered[indexPath.item]],
+            let cell = cell as? PhotoCollectionViewCell {
+            cell.state = state
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        updateDescription()
+        selectionChanged?(selectedCount)
     }
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        updateDescription()
+        selectionChanged?(selectedCount)
     }
     
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
@@ -477,13 +269,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             return false
         }
         
-        if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-            if cell.cellData?.state == .Imported {
-                return false
-            }
-        }
-        
-        return true
+        return states[filtered[indexPath.item]] != .Imported
     }
     
     override func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
@@ -510,159 +296,59 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         return lastSize
     }
     
-    // MARK: - URLSessionDownloadDelegate
-    
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        
-        if let indexPath = self.tasks[downloadTask.taskIdentifier] {
-            DispatchQueue.main.async {
-                self.filtered[indexPath.item].state = .Importing
-                if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                    cell.update()
-                    cell.progressView.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
-                }
-            }
-        }
-    }
-    
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        var cancel = false
-        if let error = error, let indexPath = self.tasks[task.taskIdentifier] {
-            debugPrint("url task fail with \(error)")
-            DispatchQueue.main.async {
-                if (error as? URLError)?.code == URLError.cancelled {
-                    cancel = true
-                    self.filtered[indexPath.item].state = .Select
-                    self.collectionView?.selectItem(at: indexPath, animated: false, scrollPosition: [])
-                } else {
-                    self.filtered[indexPath.item].state = .Error
-                }
-                if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                    cell.update()
-                }
-            }
-        }
-        
-        tasks.removeValue(forKey: task.taskIdentifier)
-        if tasks.isEmpty {
-            DispatchQueue.main.async {
-                self.appDelegate.state = .Select
-                self.updateUI()
-                let alert = cancel ? UIAlertController(title: NSLocalizedString("Cancelled", comment: "cancelled alert title"), message: NSLocalizedString("Photo import cancelled", comment: "cancelled alert message"), preferredStyle: .alert)
-                    : UIAlertController(title: NSLocalizedString("Complete", comment: "complete alert title"), message: NSLocalizedString("Photo import completed", comment: "complete alert message"), preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "alert ok button"), style: .default))
-                self.present(alert, animated: true)
-            }
-        }
-    }
-    
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        // import to photo
-        var album: PHAssetCollection? = nil
-        if let albumID = UserDefaults.standard.string(forKey: "PHAssetCollectionKey") {
-            let albums = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [albumID], options: nil)
-            album = albums.firstObject
-        }
-        
-        let fm = FileManager.default
-        let dest = fm.temporaryDirectory.appendingPathComponent(downloadTask.currentRequest!.url!.path.replacingOccurrences(of: "/", with: "_"))
-        
-        var errorOccurred = false
-        do {
-            defer {
-                try? fm.removeItem(at: dest)
-            }
-            try fm.moveItem(at: location, to: dest)
-            
-            try PHPhotoLibrary.shared().performChangesAndWait {
-                if let request = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: dest) {
-                    if let a = album, let holder = request.placeholderForCreatedAsset {
-                        if let indexPath = self.tasks[downloadTask.taskIdentifier] {
-                            let currentPhoto = self.filtered[indexPath.item]
-                            // set identifier
-                            currentPhoto.assetIdentifier = holder.localIdentifier
-                            
-                            let identifiers = self.cellDataArray.compactMap({ (cellData) -> String? in
-                                return cellData.assetIdentifier
-                            })
-                            let pos = identifiers.index(of: holder.localIdentifier)!
-                            let assets = PHAsset.fetchAssets(in: a, options: nil)
-                            var insertPos = assets.count
-                            if assets.count > 0 && !identifiers.isEmpty {
-                                assets.enumerateObjects({ (asset, idx, stop) in
-                                    if let p = identifiers.index(of: asset.localIdentifier) {
-                                        if p < pos {
-                                            insertPos = idx + 1
-                                        } else {
-                                            // p > pos
-                                            insertPos = idx
-                                            stop.pointee = true
-                                        }
-                                    }
-                                })
-                                PHAssetCollectionChangeRequest(for: a, assets: assets)?.insertAssets([holder] as NSArray, at: IndexSet(integer: insertPos))
-                            } else {
-                                PHAssetCollectionChangeRequest(for: a)?.addAssets([holder] as NSArray)
-                            }
-                        } else {
-                            // no task indexpath?
-                            PHAssetCollectionChangeRequest(for: a)?.addAssets([holder] as NSArray)
-                        }
-                    }
-                }
-            }
-        } catch {
-            errorOccurred = true
-            debugPrint(error)
-        }
-        
-        if let indexPath = self.tasks[downloadTask.taskIdentifier] {
-            filtered[indexPath.item].state = errorOccurred ? .Error : .Imported
-            DispatchQueue.main.async {
-                if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                    cell.update()
-                }
-            }
-        }
-    }
-    
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        debugPrint("FINISHED")
-        
-        DispatchQueue.main.async {
-            let appDelegate = self.appDelegate
-            appDelegate.state = .Select
-            
-            if let completionHandler = appDelegate.backgroundCompletionHandler {
-                completionHandler()
-                appDelegate.backgroundCompletionHandler = nil
-            }
-            
-            let notiCenter = UNUserNotificationCenter.current()
-            notiCenter.getNotificationSettings(completionHandler: { (settings) in
-                if settings.authorizationStatus == .authorized {
-                    let content = UNMutableNotificationContent()
-                    content.title = NSLocalizedString("Import finished", comment: "import finish notification")
-                    content.sound = UNNotificationSound.default()
-                    content.badge = 1
-                    
-                    notiCenter.add(UNNotificationRequest(identifier: "kr.inode.pkimport", content: content, trigger: nil))
-                }
-            })
-        }
-    }
-    
     // MARK: - UIDataSourceModelAssociation
     
     func modelIdentifierForElement(at idx: IndexPath, in view: UIView) -> String? {
-        return filtered[idx.item].photoPath.identifier
+        return filtered[idx.item].identifier
     }
     
     func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
-        for (idx, cellData) in filtered.enumerated() {
-            if cellData.photoPath.identifier == identifier {
+        for (idx, photoPath) in filtered.enumerated() {
+            if photoPath.identifier == identifier {
                 return IndexPath(item: idx, section: 0)
             }
+        }
+        
+        return nil
+    }
+    
+    // MARK: - PhotoImportManagerDelegate
+    
+    func importing(_ photoPath: PhotoPath, progress: Progress) {
+        let cell = updateState(photoPath, state: .Importing)
+        cell?.progressView.progress = Float(progress.fractionCompleted)
+    }
+    
+    func imported(_ photoPath: PhotoPath) {
+        updateState(photoPath, state: .Imported)
+    }
+    
+    func importCancelled(_ photoPath: PhotoPath) {
+        updateState(photoPath, state: .None)
+        if let indexPath = indexPath(for: photoPath) {
+            collectionView?.selectItem(at: indexPath, animated: false, scrollPosition: [])
+        }
+    }
+    
+    func importErrorOccurred(_ photoPath: PhotoPath, error: Error) {
+        updateState(photoPath, state: .Error)
+    }
+    
+    func importFinished() {
+        appDelegate.state = .Select
+        if let parent = parent as? MainControlViewController {
+            parent.updateUI()
+        }
+    }
+    
+    @discardableResult
+    func updateState(_ photoPath: PhotoPath, state: PhotoImportState) -> PhotoCollectionViewCell? {
+        states[photoPath] = state
+        
+        if let indexPath = indexPath(for: photoPath),
+            let cell = collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+            cell.state = state
+            return cell
         }
         
         return nil

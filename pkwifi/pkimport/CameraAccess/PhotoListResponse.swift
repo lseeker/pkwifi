@@ -39,5 +39,5 @@ struct PhotoListResponse: Decodable {
         }
         
         self.photos = photos
-    }    
+    }
 }

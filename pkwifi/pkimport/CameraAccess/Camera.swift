@@ -83,13 +83,13 @@ class Camera {
         task?.cancel()
 
         let sc = URLSessionConfiguration.ephemeral
-        sc.timeoutIntervalForRequest = 5.0
+        sc.timeoutIntervalForRequest = 5
 
         var query = ""
         if let storage = activeStorage {
             query = "?storage=\(storage)"
         }
-        
+
         task = URLSession(configuration: sc).dataTask(with: URL(string: "http://192.168.0.1/v1/photos\(query)")!) { (data, response, error) in
             if error != nil {
                 completion?(nil, error)

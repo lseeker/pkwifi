@@ -51,12 +51,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if state.rawValue >= AppState.LoadList.rawValue {
             do {
                 try Camera.shared.loadFromFile(withPhotoList: state != .LoadList)
+                return true
             } catch {
                 debugPrint(error)
                 state = .Launch
                 return false
             }
-            return true
         }
         
         state = .Launch
