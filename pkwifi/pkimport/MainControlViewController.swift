@@ -17,6 +17,7 @@ class MainControlViewController: UIViewController {
     @IBOutlet var cancelButton: UIBarButtonItem!
     
     @IBOutlet weak var filterButton: UIBarButtonItem!
+    @IBOutlet weak var filterDescButton: UIBarButtonItem!
     @IBOutlet weak var selectButton: UIBarButtonItem!
     @IBOutlet weak var bottomDescription: UIBarButtonItem!
     
@@ -74,8 +75,12 @@ class MainControlViewController: UIViewController {
     
     
     func updateUI() {
-        navigationItem.title = Camera.shared.props?.model
-        storageButton.title = Camera.shared.activeStorage
+        navigationItem.title = Camera.shared.props?.model ?? "PK Import"
+        if Camera.shared.props?.storages.count ?? 0 <= 1 {
+            storageButton.title = nil
+        } else {
+            storageButton.title = Camera.shared.activeStorage ?? "sd1"
+        }
         
         if appDelegate.state == .Import {
             if filterViewHeight.isActive {
@@ -85,6 +90,7 @@ class MainControlViewController: UIViewController {
             storageButton.isEnabled = false
             navigationItem.rightBarButtonItem = cancelButton
             filterButton.isEnabled = false
+            filterDescButton.isEnabled = false
             selectButton.isEnabled = false
             bottomDescription.title = NSLocalizedString("Importing...", comment: "description title")
         } else {
@@ -92,6 +98,7 @@ class MainControlViewController: UIViewController {
             storageButton.isEnabled = Camera.shared.props?.storages.count ?? 0 > 1
             navigationItem.rightBarButtonItem = importButton
             filterButton.isEnabled = true
+            filterDescButton.isEnabled = true
             selectButton.isEnabled = true
             
             updateDescription(count: collectionVC.selectedCount)
@@ -258,6 +265,7 @@ class MainControlViewController: UIViewController {
     @IBAction func filterChanged(_ sender: UISegmentedControl) {
         let filterType = FilterType(rawValue: sender.selectedSegmentIndex) ?? .ALL
         collectionVC?.filterType = filterType
+        filterDescButton.title = filterSegment.titleForSegment(at: sender.selectedSegmentIndex)
         
         let ud = UserDefaults.standard
         ud.set(filterType.rawValue, forKey: "FilterType")

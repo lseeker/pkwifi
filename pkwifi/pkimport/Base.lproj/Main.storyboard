@@ -126,7 +126,11 @@
                                 <action selector="filterButtonPushed:" destination="SA2-S4-tJS" id="Urp-gp-RNK"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem width="40" style="plain" systemItem="fixedSpace" id="fl3-JM-P3y"/>
+                        <barButtonItem title="ALL" style="plain" id="93S-L7-kbz">
+                            <connections>
+                                <action selector="filterButtonPushed:" destination="SA2-S4-tJS" id="9hG-2A-6kj"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="baR-yt-Igi"/>
                         <barButtonItem enabled="NO" title="No photos" style="plain" id="cCc-5u-ToI">
                             <color key="tintColor" cocoaTouchSystemColor="lightTextColor"/>
@@ -163,6 +167,7 @@
                         <outlet property="bottomDescription" destination="cCc-5u-ToI" id="6JR-53-e3F"/>
                         <outlet property="cancelButton" destination="dgb-vw-YqS" id="wJb-Np-jyM"/>
                         <outlet property="filterButton" destination="Su8-YG-tfd" id="GmH-AD-48z"/>
+                        <outlet property="filterDescButton" destination="93S-L7-kbz" id="OKw-Y5-EWL"/>
                         <outlet property="filterSegment" destination="4Nz-pP-PhB" id="eNe-nr-UhT"/>
                         <outlet property="filterView" destination="yts-9M-LHR" id="s1g-vm-vIh"/>
                         <outlet property="filterViewHeight" destination="wDO-zZ-aGN" id="xUk-1B-Cf7"/>
