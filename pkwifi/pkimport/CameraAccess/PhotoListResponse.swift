@@ -26,7 +26,7 @@ struct PhotoListResponse: Decodable {
         
         var count = 0
         var photos = [PhotoPath]()
-
+        
         for dir in dirs {
             count += dir.files.count
         }

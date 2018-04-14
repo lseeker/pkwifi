@@ -19,7 +19,7 @@ enum AppState: Int, Codable {
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
     var backgroundCompletionHandler: (() -> Void)?
     var state = AppState.Launch
@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         state = .Launch
         return false
     }
-
+    
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
         debugPrint("handleEventsForBackgroundURLSession called: \(completionHandler)")
         backgroundCompletionHandler = completionHandler

@@ -293,7 +293,7 @@ class MainControlViewController: UIViewController {
             })
         }
     }
-
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
@@ -302,7 +302,7 @@ class MainControlViewController: UIViewController {
             self.collectionVC.collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: traitCollection.horizontalSizeClass == .regular ? 44 : 81, right: 0)
         }
     }
-
+    
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation

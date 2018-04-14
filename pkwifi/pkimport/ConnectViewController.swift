@@ -18,7 +18,7 @@ class ConnectViewController: UIViewController {
             return UIApplication.shared.delegate as! AppDelegate
         }
     }
-
+    
     private var rework = false
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +30,7 @@ class ConnectViewController: UIViewController {
             }
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -134,7 +134,7 @@ class ConnectViewController: UIViewController {
     
     func loadList() {
         appDelegate.state = .LoadList
-
+        
         Camera.shared.loadList { (photos, error) in
             if error != nil {
                 print("list error: \(error!)")

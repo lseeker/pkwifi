@@ -16,7 +16,7 @@ class Camera {
             return instance
         }
     }
-
+    
     var props: CameraProperties?
     var photos: [PhotoPath]?
     private var _activeStorage: String?
@@ -63,7 +63,7 @@ class Camera {
                 completion?(nil, CameraError.invalidResult)
                 return
             }
-
+            
             let fm = FileManager.default
             var asd = try! fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             asd.appendPathComponent("CameraProperties.json")
@@ -71,7 +71,7 @@ class Camera {
             var resourceValues = URLResourceValues()
             resourceValues.isExcludedFromBackup = true
             try? asd.setResourceValues(resourceValues)
-
+            
             self.props = result
             self.task = nil
             completion?(result, nil)
@@ -81,15 +81,15 @@ class Camera {
     
     func loadList(completion: ((_ list: [PhotoPath]?, _ error: Error?) -> Void)?) {
         task?.cancel()
-
+        
         let sc = URLSessionConfiguration.ephemeral
         sc.timeoutIntervalForRequest = 5
-
+        
         var query = ""
         if let storage = activeStorage {
             query = "?storage=\(storage)"
         }
-
+        
         task = URLSession(configuration: sc).dataTask(with: URL(string: "http://192.168.0.1/v1/photos\(query)")!) { (data, response, error) in
             if error != nil {
                 completion?(nil, error)
@@ -108,7 +108,7 @@ class Camera {
             var resourceValues = URLResourceValues()
             resourceValues.isExcludedFromBackup = true
             try? asd.setResourceValues(resourceValues)
-
+            
             self.photos = result.photos
             self.task = nil
             completion?(result.photos, nil)
@@ -119,7 +119,7 @@ class Camera {
     func loadFromFile(withPhotoList: Bool) throws {
         let fm = FileManager.default
         let decoder = JSONDecoder()
-
+        
         let asd = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
         props = try decoder.decode(CameraProperties.self, from: Data(contentsOf: asd.appendingPathComponent("CameraProperties.json")))
         

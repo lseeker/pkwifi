@@ -84,7 +84,6 @@
 		7598181920021F02004ACE35 /* pkimportUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pkimportUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7598181D20021F02004ACE35 /* pkwifiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pkwifiUITests.swift; sourceTree = "<group>"; };
 		7598181F20021F02004ACE35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		75A60579206C1CE500718A02 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		75B1B8AD206EB82300F54553 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		75B1B8B3206EB86500F54553 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		75F65937207F795900164976 /* MainControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainControlViewController.swift; sourceTree = "<group>"; };
@@ -208,7 +207,6 @@
 			children = (
 				75945FD3207797110027F637 /* LaunchScreen.storyboard */,
 				75B1B8AC206EB82300F54553 /* Localizable.strings */,
-				75A60578206C1CE500718A02 /* Info.plist */,
 				751EC1912065468E00CFFEB4 /* pkimport.entitlements */,
 				75583339205AB29E0004DAE2 /* CameraAccess */,
 				75F6593B207FA5F600164976 /* Import */,
@@ -611,14 +609,6 @@
 				750F0951206EB4570015DF34 /* ko */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		75A60578206C1CE500718A02 /* Info.plist */ = {
-			isa = PBXVariantGroup;
-			children = (
-				75A60579206C1CE500718A02 /* Base */,
-			);
-			name = Info.plist;
 			sourceTree = "<group>";
 		};
 		75B1B8AC206EB82300F54553 /* Localizable.strings */ = {
