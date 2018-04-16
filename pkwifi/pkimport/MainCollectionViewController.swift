@@ -114,27 +114,22 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         let selected = self.collectionView?.indexPathsForSelectedItems
         
         if selected?.isEmpty ?? true {
-            if sortOrder == .Date {
-                for (idx, photo) in filtered.enumerated() {
-                    if states[photo] != .Imported {
-                        startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
-                    }
-                }
-            } else {
-                // Recent order
-                for (idx, photo) in filtered.enumerated().reversed() {
-                    if states[photo] != .Imported {
-                        startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
+            DispatchQueue(label: "importing").async {
+                for (idx, photo) in self.filtered.enumerated() {
+                    if self.states[photo] != .Imported {
+                        self.startDownload(photo, indexPath: IndexPath(item: idx, section: 0))
                     }
                 }
             }
         } else {
             // import selected photos
-            let indexPaths = sortOrder == .Date ? selected!.sorted() : selected!.sorted().reversed()
+            let indexPaths = selected!.sorted()
             // clean up selection for futher states change
             self.collectionView?.selectItem(at: nil, animated: false, scrollPosition: [])
-            for indexPath in indexPaths {
-                self.startDownload(self.filtered[indexPath.item], indexPath: indexPath)
+            DispatchQueue(label: "importing").async {
+                for indexPath in indexPaths {
+                    self.startDownload(self.filtered[indexPath.item], indexPath: indexPath)
+                }
             }
         }
     }
@@ -142,8 +137,10 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     private func startDownload(_ photoPath: PhotoPath, indexPath: IndexPath) {
         importManager.beginImport(photoPath)
         states[photoPath] = .StandBy
-        if let cell = collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-            cell.state = .StandBy
+        DispatchQueue.main.async {
+            if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+                cell.state = .StandBy
+            }
         }
     }
     
@@ -224,6 +221,10 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         }
         
         super.decodeRestorableState(with: coder)
+        
+        if let parent = parent as? MainControlViewController {
+            parent.updateUI()
+        }
     }
     
     // MARK: - UICollectionViewDataSource
@@ -340,17 +341,17 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func importFinished() {
-        appDelegate.state = .Select
-        if let parent = parent as? MainControlViewController {
-            parent.updateUI()
-        }
-        
         // if state contains none, will cancelled
         let alert = states.values.contains(.None) ? UIAlertController(title: NSLocalizedString("Cancelled", comment: "cancelled alert title"), message: NSLocalizedString("Import cancelled", comment: "cancelled alert message"), preferredStyle: .alert)
             : UIAlertController(title: NSLocalizedString("Completed", comment: "complete alert title"), message: NSLocalizedString("Import completed", comment: "complete alert message"), preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "alert ok button"), style: .default))
-        self.present(alert, animated: true)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "alert ok button"), style: .default) { (action) in
+            self.appDelegate.state = .Select
+            if let parent = self.parent as? MainControlViewController {
+                parent.updateUI()
+            }
+        })
         
+        self.present(alert, animated: true)
     }
     
     @discardableResult

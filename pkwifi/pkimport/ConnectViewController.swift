@@ -89,16 +89,22 @@ class ConnectViewController: UIViewController {
             let ud = UserDefaults.standard
             
             if error != nil {
-                print("load prop error: \(error!)")
+                debugPrint("load prop error: \(error!)")
+                
                 #if !arch(x86_64)
                 if let ssid = ud.string(forKey: "lastSSID"), let key = ud.string(forKey: "lastKey") {
                     let config = NEHotspotConfiguration(ssid: ssid, passphrase: key, isWEP: false)
-                    NEHotspotConfigurationManager.shared.apply(config, completionHandler: { (error) in
-                        if let heerr = error as NSError? {
-                            print("hotspot error: \(error!)")
-                            if heerr.domain == "NEHotspotConfigurationErrorDomain" {
-                                switch heerr.code {
+                    NEHotspotConfigurationManager.shared.apply(config, completionHandler: { (heerror) in
+                        if let heerror = heerror as NSError? {
+                            debugPrint("hotspot error: \(heerror)")
+                            if heerror.domain == "NEHotspotConfigurationErrorDomain" {
+                                switch heerror.code {
                                 case NEHotspotConfigurationError.alreadyAssociated.rawValue:
+                                    if let error = error as? CameraError {
+                                        if error == .invalidResult {
+                                            break
+                                        }
+                                    }
                                     fallthrough
                                 case NEHotspotConfigurationError.pending.rawValue:
                                     self.loadProps()
@@ -137,7 +143,7 @@ class ConnectViewController: UIViewController {
         
         Camera.shared.loadList { (photos, error) in
             if error != nil {
-                print("list error: \(error!)")
+                debugPrint("list error: \(error!)")
                 self.showError(NSLocalizedString("Error occured in load photos list.\nGo to Settings > Wi-Fi and confirm connected to your camera.", comment: "loading photo list error message"))
                 return
             }

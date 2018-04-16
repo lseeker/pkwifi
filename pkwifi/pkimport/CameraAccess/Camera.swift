@@ -83,7 +83,7 @@ class Camera {
         task?.cancel()
         
         let sc = URLSessionConfiguration.ephemeral
-        sc.timeoutIntervalForRequest = 5
+        sc.timeoutIntervalForRequest = 120
         
         var query = ""
         if let storage = activeStorage {

@@ -228,7 +228,7 @@
                                             <rect key="frame" x="136.5" y="96" width="20" height="20"/>
                                         </activityIndicatorView>
                                         <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="bottom" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NAME" textAlignment="right" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QUA-AS-jr5">
-                                            <rect key="frame" x="0.0" y="2" width="158" height="15.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="158" height="15.5"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
@@ -245,7 +245,7 @@
                                     <constraint firstAttribute="bottom" secondItem="Lq4-A8-FC1" secondAttribute="bottom" constant="-2" id="K7u-ao-9uf"/>
                                     <constraint firstItem="kcG-t1-qST" firstAttribute="height" secondItem="eDj-WB-se8" secondAttribute="height" id="PoW-KB-NNq"/>
                                     <constraint firstItem="kcG-t1-qST" firstAttribute="centerX" secondItem="eDj-WB-se8" secondAttribute="centerX" id="Y6E-px-p3r"/>
-                                    <constraint firstItem="QUA-AS-jr5" firstAttribute="top" secondItem="eDj-WB-se8" secondAttribute="top" constant="2" id="aUG-Fg-nyd"/>
+                                    <constraint firstItem="QUA-AS-jr5" firstAttribute="top" secondItem="eDj-WB-se8" secondAttribute="top" id="aUG-Fg-nyd"/>
                                     <constraint firstItem="Q0l-hV-zkt" firstAttribute="width" secondItem="eDj-WB-se8" secondAttribute="width" id="cIZ-nO-S5j"/>
                                     <constraint firstAttribute="trailing" secondItem="QUA-AS-jr5" secondAttribute="trailing" constant="2" id="fGS-WR-Ke9"/>
                                     <constraint firstAttribute="bottom" secondItem="Q0l-hV-zkt" secondAttribute="bottom" id="jyt-gU-7JZ"/>
@@ -295,7 +295,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.74652183219178081" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.80115582192602741" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Eds-0Z-DBs" firstAttribute="centerX" secondItem="jHO-ao-Rv7" secondAttribute="centerX" id="7pH-vz-aFf"/>
                             <constraint firstItem="NwQ-DR-RPk" firstAttribute="centerX" secondItem="jHO-ao-Rv7" secondAttribute="centerX" id="7s0-F1-dtf"/>

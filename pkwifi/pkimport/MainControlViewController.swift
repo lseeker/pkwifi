@@ -106,6 +106,10 @@ class MainControlViewController: UIViewController {
     }
     
     func updateDescription(count: Int) {
+        let exists = collectionVC.totalCount > 0
+        importButton.isEnabled = exists
+        selectButton.isEnabled = exists
+
         if collectionVC.selectedCount > 0 {
             importButton.title = NSLocalizedString("Import Selected", comment: "import button title")
             selectButton.title = NSLocalizedString("Deselect All", comment: "select button title")
@@ -266,6 +270,9 @@ class MainControlViewController: UIViewController {
         let filterType = FilterType(rawValue: sender.selectedSegmentIndex) ?? .ALL
         collectionVC?.filterType = filterType
         filterDescButton.title = filterSegment.titleForSegment(at: sender.selectedSegmentIndex)
+
+        // update for buttons state
+        updateUI()
         
         let ud = UserDefaults.standard
         ud.set(filterType.rawValue, forKey: "FilterType")

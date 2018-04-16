@@ -28,6 +28,7 @@
 		7598181E20021F02004ACE35 /* pkwifiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7598181D20021F02004ACE35 /* pkwifiUITests.swift */; };
 		75B1B8AE206EB82300F54553 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75B1B8AC206EB82300F54553 /* Localizable.strings */; };
 		75B1B8B4206EB86600F54553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75B1B8B2206EB86500F54553 /* InfoPlist.strings */; };
+		75C02E51208504FD0031EE44 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75B1B8B2206EB86500F54553 /* InfoPlist.strings */; };
 		75F65938207F795900164976 /* MainControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F65937207F795900164976 /* MainControlViewController.swift */; };
 		75F6593A207FA56300164976 /* PhotoImportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F65939207FA56300164976 /* PhotoImportManager.swift */; };
 		75F65941207FC24E00164976 /* PhotoImportError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F65940207FC24E00164976 /* PhotoImportError.swift */; };
@@ -72,6 +73,7 @@
 		75583342205EA5F40004DAE2 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		75583346205ED8BC0004DAE2 /* PhotoListResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoListResponse.swift; sourceTree = "<group>"; };
 		755935EB2066549000503FFD /* CameraError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraError.swift; sourceTree = "<group>"; };
+		757A65592084FCBD00F78CF7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		75945FD3207797110027F637 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		759500B6207B729600F0B54B /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		759817F520021F02004ACE35 /* pkimport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pkimport.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +88,8 @@
 		7598181F20021F02004ACE35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75B1B8AD206EB82300F54553 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		75B1B8B3206EB86500F54553 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		75C02E50208504FD0031EE44 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		75C02E52208504FD0031EE44 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		75F65937207F795900164976 /* MainControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainControlViewController.swift; sourceTree = "<group>"; };
 		75F65939207FA56300164976 /* PhotoImportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportManager.swift; sourceTree = "<group>"; };
 		75F65940207FC24E00164976 /* PhotoImportError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportError.swift; sourceTree = "<group>"; };
@@ -355,6 +359,7 @@
 				en,
 				Base,
 				ko,
+				ja,
 			);
 			mainGroup = 759817EC20021F01004ACE35;
 			productRefGroup = 759817F620021F02004ACE35 /* Products */;
@@ -374,6 +379,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75B1B8B4206EB86600F54553 /* InfoPlist.strings in Resources */,
+				75C02E51208504FD0031EE44 /* InfoPlist.strings in Resources */,
 				7598180520021F02004ACE35 /* Assets.xcassets in Resources */,
 				75B1B8AE206EB82300F54553 /* Localizable.strings in Resources */,
 				75945FD4207797110027F637 /* LaunchScreen.storyboard in Resources */,
@@ -607,6 +613,7 @@
 			children = (
 				7598180220021F02004ACE35 /* Base */,
 				750F0951206EB4570015DF34 /* ko */,
+				757A65592084FCBD00F78CF7 /* ja */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -615,6 +622,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				75B1B8AD206EB82300F54553 /* ko */,
+				75C02E52208504FD0031EE44 /* ja */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -623,6 +631,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				75B1B8B3206EB86500F54553 /* ko */,
+				75C02E50208504FD0031EE44 /* ja */,
 			);
 			name = InfoPlist.strings;
 			path = pkimport;

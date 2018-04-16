@@ -16,7 +16,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
                 thumbnail.kf.cancelDownloadTask()
                 name.text = photoPath?.file
                 thumbnail.image = nil
-                thumbnail.kf.setImage(with: photoPath?.thumbnailURL)
+                thumbnail.kf.setImage(with: photoPath?.thumbnailURL, placeholder: #imageLiteral(resourceName: "EmptyThumbnail"))
             }
         }
     }

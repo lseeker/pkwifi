@@ -29,7 +29,7 @@
             </objects>
             <point key="canvasLocation" x="-918" y="375"/>
         </scene>
-        <!--PK Import-->
+        <!--View Controller-->
         <scene sceneID="EHf-IW-A2E">
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
@@ -44,7 +44,7 @@
                             <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="PK Import" id="ho7-EW-Dft">
+                    <navigationItem key="navigationItem" id="ho7-EW-Dft">
                         <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="YCh-xa-Jkm">
                             <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </barButtonItem>
@@ -71,18 +71,7 @@
                             </containerView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kde-Na-Pcj">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <subviews>
-                                    <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uW8-xu-guU">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                    </containerView>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.74652183220000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstItem="uW8-xu-guU" firstAttribute="top" secondItem="kde-Na-Pcj" secondAttribute="top" id="8wW-Ic-Ho6"/>
-                                    <constraint firstAttribute="trailing" secondItem="uW8-xu-guU" secondAttribute="trailing" id="N60-HX-6Z9"/>
-                                    <constraint firstAttribute="bottom" secondItem="uW8-xu-guU" secondAttribute="bottom" id="Ruz-Zm-UlL"/>
-                                    <constraint firstItem="uW8-xu-guU" firstAttribute="leading" secondItem="kde-Na-Pcj" secondAttribute="leading" id="qNT-99-FWd"/>
-                                </constraints>
+                                <color key="backgroundColor" white="0.0" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <viewLayoutGuide key="safeArea" id="SyZ-Pg-lt4"/>
                             </view>
                         </subviews>

@@ -29,13 +29,16 @@ class PhotoImportManager: NSObject, URLSessionDownloadDelegate {
     
     private var backgroundSession: URLSession!
     private var tasks = [Int : PhotoPath]()
+    private var beginDate = Date()
+    private var priority: Float = 1.0
+    
     var delegate: PhotoImportManagerDelegate? {
         didSet {
             // create urlsession here for delegation works on restored condition
             let sc = URLSessionConfiguration.background(withIdentifier: "kr.inode.pkimport")
-            sc.httpMaximumConnectionsPerHost = 2 // set to 2, but not works cause access by ip
-            sc.timeoutIntervalForRequest = 10
+            sc.httpMaximumConnectionsPerHost = 2
             sc.shouldUseExtendedBackgroundIdleMode = true
+            sc.timeoutIntervalForRequest = 600
             backgroundSession = URLSession(configuration: sc, delegate: self, delegateQueue: nil)
         }
     }
@@ -46,7 +49,21 @@ class PhotoImportManager: NSObject, URLSessionDownloadDelegate {
     
     func beginImport(_ photoPath: PhotoPath) {
         let task = backgroundSession.downloadTask(with: photoPath.downloadURL)
-        task.priority = URLSessionTask.highPriority
+        
+        if tasks.isEmpty {
+            beginDate = Date()
+            priority = 1.0
+        } else {
+            let isRaw = photoPath.file.hasSuffix(".DNG") || photoPath.file.hasSuffix(".PEF")
+            beginDate = beginDate.addingTimeInterval(isRaw ? 20.0 : 3.0)
+
+            priority *= 0.95
+        }
+        if tasks.count > 2 {
+            task.earliestBeginDate = beginDate
+        }
+        task.priority = priority
+        
         tasks[task.taskIdentifier] = photoPath
         task.resume()
     }
@@ -62,7 +79,6 @@ class PhotoImportManager: NSObject, URLSessionDownloadDelegate {
     // MARK: - URLSessionDownloadDelegate
     // all delegate methods are run on serialized queue
     // photoimportdelegate should call on main thread
-    
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         
         if let photoPath = tasks[downloadTask.taskIdentifier] {
