@@ -19,11 +19,16 @@ enum PhotoImportState: Int, Codable {
     case Error
 }
 
-class MainCollectionViewController: UICollectionViewController, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout, UIDataSourceModelAssociation, PhotoImportManagerDelegate {
+class MainCollectionViewController: UICollectionViewController, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, PhotoImportManagerDelegate {
     
     private let importManager = PhotoImportManager.shared
     private var filtered = [PhotoPath]()
     private var states = [PhotoPath: PhotoImportState]()
+    
+    private var isSelectMode = true
+    private var startIndexPath: IndexPath!
+    private var lastIndexPath: IndexPath!
+    private lazy var changedItems: IndexSet = IndexSet()
     
     var selectionChanged: ((Int) -> Void)?
     var filterType = FilterType.ALL {
@@ -140,6 +145,8 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         DispatchQueue.main.async {
             if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
                 cell.state = .StandBy
+            } else {
+                self.collectionView?.reloadItems(at: [indexPath])
             }
         }
     }
@@ -316,6 +323,88 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         }
         
         return nil
+    }
+    
+    // MARK: - Gesture Recognizer
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return appDelegate.state == .Select
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    private func selectItem(at indexPath: IndexPath, isSelect: Bool) {
+        if isSelect {
+            collectionView?.selectItem(at: indexPath, animated: true, scrollPosition: [])
+        } else {
+            collectionView?.deselectItem(at: indexPath, animated: true)
+        }
+    }
+    
+    @IBAction func beginPanningSelection(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            if let indexPath = collectionView?.indexPathForItem(at: sender.location(in: collectionView)) {
+                collectionView?.isScrollEnabled = false
+                startIndexPath = indexPath
+                lastIndexPath = indexPath
+                
+                if let cell = collectionView?.cellForItem(at: indexPath) {
+                    isSelectMode = !cell.isSelected
+                    selectItem(at: indexPath, isSelect: isSelectMode)
+                }
+            }
+        } else if sender.state == .changed {
+            // select or deselect
+            if let indexPath = collectionView?.indexPathForItem(at: sender.location(in: collectionView)) {
+                if indexPath == lastIndexPath {
+                    // not changed
+                    return
+                }
+
+                // make range for target
+                var range: CountableClosedRange<Int>!
+                if indexPath < startIndexPath {
+                    range = indexPath.item ... startIndexPath.item
+                } else {
+                    range = startIndexPath.item ... indexPath.item
+                }
+                
+                // restore not in range
+                let restoreTargets = changedItems.subtracting(IndexSet(integersIn: range))
+                for i in restoreTargets {
+                    selectItem(at: IndexPath(item: i, section: 0), isSelect: !isSelectMode)
+                    changedItems.remove(i)
+                }
+
+                // select/deselect
+                let selected = collectionView?.indexPathsForSelectedItems
+                for i in range {
+                    let targetIndexPath = IndexPath(item: i, section: 0)
+                    let isSelected = selected?.contains(targetIndexPath) == true
+                    if isSelectMode {
+                        if !isSelected {
+                            selectItem(at: targetIndexPath, isSelect: true)
+                            changedItems.insert(i)
+                        }
+                    } else {
+                        if isSelected {
+                            selectItem(at: targetIndexPath, isSelect: false)
+                            changedItems.insert(i)
+                        }
+                    }
+                }
+                
+                // update last path
+                lastIndexPath = indexPath
+            }
+        } else if sender.state == .ended {
+            collectionView?.isScrollEnabled = true
+            startIndexPath = nil
+            lastIndexPath = nil
+            changedItems.removeAll()
+        }
     }
     
     // MARK: - PhotoImportManagerDelegate

@@ -265,12 +265,19 @@
                         <connections>
                             <outlet property="dataSource" destination="XQU-sc-zzy" id="mUg-Od-nLF"/>
                             <outlet property="delegate" destination="XQU-sc-zzy" id="JAl-Rp-07a"/>
+                            <outletCollection property="gestureRecognizers" destination="okx-kX-zMv" appends="YES" id="8uv-YY-WdD"/>
                         </connections>
                     </collectionView>
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Pd-ih-DQB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.29999999999999999" id="okx-kX-zMv">
+                    <connections>
+                        <action selector="beginPanningSelection:" destination="XQU-sc-zzy" id="ofL-eC-9Aa"/>
+                        <outlet property="delegate" destination="XQU-sc-zzy" id="z9N-pf-0nE"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1064" y="-987"/>
         </scene>
