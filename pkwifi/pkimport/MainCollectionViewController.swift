@@ -433,8 +433,9 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
         // if state contains none, will cancelled
         let alert = states.values.contains(.None) ? UIAlertController(title: NSLocalizedString("Cancelled", comment: "cancelled alert title"), message: NSLocalizedString("Import cancelled", comment: "cancelled alert message"), preferredStyle: .alert)
             : UIAlertController(title: NSLocalizedString("Completed", comment: "complete alert title"), message: NSLocalizedString("Import completed", comment: "complete alert message"), preferredStyle: .alert)
+
+        self.appDelegate.state = .Select
         alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "alert ok button"), style: .default) { (action) in
-            self.appDelegate.state = .Select
             if let parent = self.parent as? MainControlViewController {
                 parent.updateUI()
             }
