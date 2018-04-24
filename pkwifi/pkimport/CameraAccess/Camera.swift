@@ -9,8 +9,9 @@
 import Foundation
 
 class Camera {
-    private static let instance = Camera()
+    static let IP = "192.168.0.1"
     
+    private static let instance = Camera()
     class var shared: Camera {
         get {
             return instance
@@ -53,7 +54,7 @@ class Camera {
         let sc = URLSessionConfiguration.ephemeral
         sc.timeoutIntervalForRequest = 3
         
-        task = URLSession(configuration: sc).dataTask(with: URL(string:"http://192.168.0.1/v1/props")!) { (data, response, error) in
+        task = URLSession(configuration: sc).dataTask(with: URL(string:"http://\(Camera.IP)/v1/props")!) { (data, response, error) in
             if error != nil {
                 completion?(nil, error)
                 return
@@ -90,7 +91,7 @@ class Camera {
             query = "?storage=\(storage)"
         }
         
-        task = URLSession(configuration: sc).dataTask(with: URL(string: "http://192.168.0.1/v1/photos\(query)")!) { (data, response, error) in
+        task = URLSession(configuration: sc).dataTask(with: URL(string: "http://\(Camera.IP)/v1/photos\(query)")!) { (data, response, error) in
             if error != nil {
                 completion?(nil, error)
                 return

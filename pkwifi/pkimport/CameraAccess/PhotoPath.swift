@@ -43,7 +43,7 @@ class PhotoPath: Codable, Hashable
             if let storage = Camera.shared.activeStorage {
                 query += "&storage=\(storage)"
             }
-            return URL(string: "http://192.168.0.1/v1/photos/\(dir)/\(file)?\(query)")!
+            return URL(string: "http://\(Camera.IP)/v1/photos/\(dir)/\(file)?\(query)")!
         }
     }
     
@@ -53,7 +53,7 @@ class PhotoPath: Codable, Hashable
             if let storage = Camera.shared.activeStorage {
                 query = "&storage=\(storage)"
             }
-            return URL(string: "http://192.168.0.1/v1/photos/\(dir)/\(file)?size=full\(query)")!
+            return URL(string: "http://\(Camera.IP)/v1/photos/\(dir)/\(file)?size=full\(query)")!
         }
     }
     
