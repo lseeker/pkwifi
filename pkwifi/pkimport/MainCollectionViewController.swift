@@ -404,6 +404,7 @@ class MainCollectionViewController: UICollectionViewController, UICollectionView
             startIndexPath = nil
             lastIndexPath = nil
             changedItems.removeAll()
+            selectionChanged?(selectedCount)
         }
     }
     
